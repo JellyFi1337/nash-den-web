@@ -1,0 +1,24 @@
+# Режим без SSL: сайт открывается по http://<IP или домен>, только порт 80.
+# Бот работает в личных сообщениях; в группу его добавлять не нужно.
+# Подключается третьим файлом. На сервере проще одной строкой в .env (docs/DEPLOY.md, раздел 7):
+#   COMPOSE_FILE=compose.yaml:compose.prod.yaml:compose.http.yaml
+# Тогда хватает docker compose up -d --build.
+
+services:
+  web:
+    environment:
+      # Без HTTPS браузер не вернёт cookie с флагом Secure — вход бы не работал.
+      DJANGO_SECURE_COOKIES: "0"
+      DJANGO_HSTS_SECONDS: "0"
+
+  bot:
+    environment:
+      DJANGO_SECURE_COOKIES: "0"
+      DJANGO_HSTS_SECONDS: "0"
+
+  caddy:
+    command: ["caddy", "run", "--config", "/etc/caddy/Caddyfile.http", "--adapter", "caddyfile"]
+    ports: !override
+      - "80:80"
+    healthcheck:
+      test: ["CMD", "caddy", "validate", "--config", "/etc/caddy/Caddyfile.http", "--adapter", "caddyfile"]

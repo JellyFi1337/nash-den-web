@@ -1,0 +1,39 @@
+# Продакшен-сборка на Windows без домена. Не подменяет проект разработки:
+# docker compose -p nashden-localprod -f compose.yaml -f compose.local-prod.yaml up -d --build --wait
+# Сайт: http://localhost:8080
+
+services:
+  web:
+    image: nashden-web-prod
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.prod
+      RUN_MIGRATIONS: "1"
+      TRUSTED_PROXY_COUNT: "1"
+      DJANGO_SECURE_COOKIES: "0"
+      DJANGO_HSTS_SECONDS: "0"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DJANGO_CSRF_TRUSTED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+      SITE_URL: http://localhost:8080
+    healthcheck:
+      start_period: 60s
+
+  bot:
+    image: nashden-web-prod
+    profiles:
+      - bot
+
+  caddy:
+    image: caddy:2.11.4
+    command: ["caddy", "reverse-proxy", "--from", ":80", "--to", "web:8000"]
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      web:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "caddy", "version"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped

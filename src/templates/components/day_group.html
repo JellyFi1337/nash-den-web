@@ -1,0 +1,21 @@
+{% load ui %}
+{% if rows.shown %}
+<section style="margin-top:1rem">
+    {% if title %}<div class="label">{{ title }}</div>{% endif %}
+    <div class="stack" style="margin-top:.5rem">
+        {% for row in rows.shown %}
+        {% include "components/day_person.html" %}
+        {% endfor %}
+        {% if rows.more %}
+        <details class="more">
+            <summary class="chip">ещё {{ rows.more_count }}</summary>
+            <div class="stack" style="margin-top:.75rem">
+                {% for row in rows.more %}
+                {% include "components/day_person.html" %}
+                {% endfor %}
+            </div>
+        </details>
+        {% endif %}
+    </div>
+</section>
+{% endif %}

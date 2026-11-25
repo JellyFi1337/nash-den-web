@@ -1,0 +1,11 @@
+<section class="card w-12 chat-copy" id="{{ anchor }}">
+    <div class="label">текст для общего чата</div>
+    <details class="more">
+        <summary class="chip">показать текст</summary>
+        <pre class="chat-copy__text" id="{{ anchor }}-text" tabindex="0">{{ text }}</pre>
+        <div class="chat-copy__actions">
+            <button class="chip chip--fill week-link" type="button" data-copy="{{ anchor }}-text">Скопировать</button>
+            <span class="source-note">опубликовать в чате может владелец или ответственный за дайджест</span>
+        </div>
+    </details>
+</section>

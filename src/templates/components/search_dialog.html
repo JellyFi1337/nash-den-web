@@ -1,0 +1,13 @@
+<dialog class="search-dialog" id="search-dialog" aria-labelledby="search-title" data-search-url="{% url 'search' %}">
+    <div class="search-head">
+        <h2 class="h-card" id="search-title">Поиск по дням</h2>
+        <button class="chip search-close" type="button" data-search-close aria-label="Закрыть поиск">✕</button>
+    </div>
+    <label class="visually-hidden" for="search-query">Слова из отчётов</label>
+    <input class="search-input" id="search-query" type="search" maxlength="80" minlength="2" autocomplete="off" enterkeyhint="search" placeholder="Что ищем?" aria-describedby="search-hint search-status">
+    <p class="source-note" id="search-hint">ищите по словам из отчётов</p>
+    <p class="search-status" id="search-status" role="status" aria-live="polite" aria-atomic="true">Введите хотя бы два символа.</p>
+    <div class="search-history" data-search-history></div>
+    <div class="search-results" data-search-results></div>
+    <p class="search-keys">↑ ↓ — выбрать · Enter — открыть · Esc — закрыть</p>
+</dialog>

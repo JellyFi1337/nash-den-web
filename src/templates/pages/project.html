@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load ui %}
+
+{% block title %}Проект — Наш день{% endblock %}
+
+{% block content %}
+{% if quiet %}
+<h1 class="h-page">Проект</h1>
+{% empty_state "Ещё тихо. Первая запись откроет день." %}
+{% else %}
+<div class="two">
+    <section class="card card--ink">
+        {% if deadline %}<div class="label">{{ deadline|typo }}</div>{% endif %}
+        {% if title %}<div class="h-page" style="margin:.375rem 0 .625rem">{{ title|typo }}</div>{% endif %}
+        {% if tagline %}<p>{{ tagline|typo }}</p>{% endif %}
+        {% if checklist_label %}<div class="label" style="margin-top:.75rem">{{ checklist_label|typo }}</div>{% endif %}
+        {% if checklist %}
+        <div class="stack" style="margin-top:.5rem">
+            {% for item in checklist %}
+            <div class="todo{% if item.done %} is-done{% endif %}">
+                <span class="todo__box">{% if item.done %}✓{% endif %}</span>
+                <div><b>{{ item.title|typo }}</b></div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if decisions %}
+        <div class="stack" style="margin-top:.75rem">
+            {% for item in decisions %}
+            <div class="todo{% if item.done %} is-done{% endif %}">
+                <span class="todo__box">{% if item.done %}✓{% endif %}</span>
+                <div><b>{{ item.title|typo }}</b>{% if item.meta %}<div class="todo__meta">{{ item.meta|typo }}</div>{% endif %}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </section>
+    {% if questions %}
+    <section class="card card--dashed">
+        <div class="label">открытые вопросы</div>
+        <div class="stack" style="margin-top:.5rem">
+            {% for text in questions %}<div>{{ text|typo }}</div>{% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+{% for week in updates %}
+<section class="card" style="margin-top:var(--gap)">
+    <div class="label">{{ week.label|typo }}</div>
+    <div class="stack" style="margin-top:.5rem">
+        {% for item in week.items %}<div><span class="label">{{ item.day }}</span> {{ item.text|typo }}</div>{% endfor %}
+    </div>
+</section>
+{% endfor %}
+
+{% if report %}
+<section class="card" style="margin-top:var(--gap)">
+    <div class="label">проект за {{ report.day }}</div>
+    {% if report.pulse %}<p style="margin-top:.375rem">{{ report.pulse|typo }}</p>{% endif %}
+    {% for item in report.departments %}
+    <div class="dept">
+        {% if item.name %}<div class="label" style="color:var(--fg)">{{ item.name|typo }}{% if item.people %} · {{ item.people }}{% endif %}</div>{% endif %}
+        {% if item.summary %}<p>{{ item.summary|typo }}</p>{% endif %}
+    </div>
+    {% endfor %}
+    {% if report.risks %}
+    <div class="label" style="margin-top:.75rem">риски</div>
+    <ul class="attention">
+        {% for item in report.risks %}<li>{{ item|typo }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% if report.next_step.text %}
+    <div class="label" style="margin-top:.75rem;color:var(--fg)">ближайший шаг{% if report.next_step.owners %} · {{ report.next_step.owners }}{% endif %}{% if report.next_step.due %} · до {{ report.next_step.due }}{% endif %}</div>
+    <p>{{ report.next_step.text|typo }}</p>
+    {% endif %}
+</section>
+{% endif %}
+
+{% if departments %}
+<section class="departments" id="departments">
+    <h2 class="label">отделы · по дням</h2>
+    <div class="week-grid">
+        {% for dept in departments %}
+        <section class="card">
+            <div class="label" style="color:var(--fg)">{{ dept.name|typo }}</div>
+            {% include "components/dept_entry.html" with entry=dept.latest %}
+            {% if dept.earlier %}<details class="week-more"><summary class="chip">ранее · {{ dept.earlier|length }}</summary>{% for entry in dept.earlier %}{% include "components/dept_entry.html" %}{% endfor %}</details>{% endif %}
+        </section>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endif %}
+{% endblock %}

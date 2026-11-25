@@ -1,0 +1,150 @@
+/* Новые классы страницы дня. Перенесены из docs/design/reference/day-page.html как есть. */
+
+.brand { display: flex; align-items: center; justify-content: center; gap: .5rem; flex: none; min-width: 2.75rem; min-height: 2.75rem; }
+.brand__mark { width: 2.125rem; height: 2.125rem; display: block; }
+.brand__word { font: 900 1.125rem var(--font-display); letter-spacing: -.03em; display: none; }
+@media (min-width: 60rem) { .brand__word { display: block; } }
+
+.day-grid { display: grid; gap: var(--gap); }
+.day-grid > * { min-width: 0; }
+.day-grid [id] { scroll-margin-top: calc(var(--day-toc-height, 3.5rem) + 1rem); }
+/* Длинная погода из отчёта переносится и в шапке дня, и в сетке блоков (решение 016). */
+.day-grid .chips .chip, .day-head .chips .chip { white-space: normal; overflow-wrap: anywhere; }
+.day-grid .quote { overflow-wrap: anywhere; }
+@media (min-width: 60rem) {
+  .day-grid { grid-template-columns: repeat(12, 1fr); }
+  .day-grid > .w-12 { grid-column: span 12; }
+  .day-grid > .w-7 { grid-column: span 7; }
+  .day-grid > .w-5 { grid-column: span 5; }
+  .day-grid > .w-6 { grid-column: span 6; }
+}
+
+.day-title { font: 900 clamp(2rem, 8vw, 3.5rem)/1 var(--font-display); letter-spacing: -.04em; margin: .5rem 0 .5rem; }
+.day-lead { font-size: 1.125rem; font-weight: 600; max-width: 40rem; }
+
+.day-head { margin-bottom: 1rem; }
+.toc-sentinel { height: 1px; }
+.toc { position: sticky; top: 0; z-index: 25; display: flex; gap: .375rem; overflow-x: auto; max-width: 100%; padding: .5rem 0; margin-bottom: var(--gap); background: var(--page); color: var(--fg); border-bottom: var(--bw) solid transparent; scrollbar-width: none; }
+.toc.is-stuck { border-bottom-color: var(--surface-edge); }
+.toc a { flex: none; }
+.toc a[aria-current="true"] { background: var(--mark-bg); color: var(--mark-fg); border-color: var(--mark-bg); }
+
+.sharecard-trigger { margin-top: .75rem; }
+.sharecard-dialog { margin: auto; width: min(34rem, calc(100% - 2rem)); max-height: calc(100dvh - 2rem); overflow-y: auto; padding: 1rem; border: var(--bw) solid var(--surface-edge); border-radius: var(--r-card); background: var(--surface); color: var(--fg); }
+.sharecard-dialog::backdrop { background: var(--surface-ink); opacity: .7; }
+.sharecard-dialog__head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.sharecard-preview { width: auto; max-width: 100%; max-height: 65dvh; height: auto; margin: .75rem auto; border-radius: .5rem; }
+.sharecard-dialog__actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+.sharecard-dialog__actions .btn { flex: 1; width: auto; min-width: 7rem; min-height: 2.75rem; }
+.sharecard-dialog button:disabled { color: var(--fg-mute); background: var(--track); cursor: wait; }
+.sharecard-dialog [hidden] { display: none; }
+
+.facts { list-style: none; display: grid; gap: .5rem; }
+.facts__item { display: grid; grid-template-columns: .875rem 1fr; gap: .5rem; font-weight: 600; }
+.facts__item::before { content: ""; width: .5rem; height: .5rem; margin-top: .5em; border-radius: 50%; background: var(--hot); }
+.card--ink .facts__item::before { background: var(--lime); }
+
+.numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: var(--gap); }
+.numbers .num { font-size: 2.5rem; }
+
+.timeline__row b { font-weight: 700; }
+.timeline__kind { font: 700 .5625rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--fg-mute); margin-left: .375rem; }
+.card--ink .timeline__kind { color: var(--on-ink-dim); }
+.timeline__row[data-kind="win"] b { background: var(--lime-soft); color: var(--ink); padding: 0 .2em; border-radius: .2em; }
+
+.voices { display: grid; gap: .875rem; }
+.voice { border-left: 3px solid var(--hot); padding: .125rem 0 .125rem .75rem; }
+.voice__text { font: 800 1.0625rem/1.25 var(--font-display); }
+.voice__who { font: 700 .625rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--fg-mute); margin-top: .25rem; }
+
+.words { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .875rem; }
+.word { font: 900 1rem/1.1 var(--font-display); letter-spacing: -.02em; }
+.word[data-w="2"] { font-size: 1.375rem; }
+.word[data-w="3"] { font-size: 1.875rem; }
+.word sup { font: 700 .625rem var(--font-mono); color: var(--hot); margin-left: .125rem; }
+
+.links { display: grid; gap: .625rem; }
+.link-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: .125rem .5rem; font-weight: 700; }
+.link-row__arrow { font-family: var(--font-mono); }
+.link-row__text { flex-basis: 100%; font-weight: 400; font-size: .9375rem; opacity: .85; }
+.link-row__kind { font: 700 .5625rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+
+.attention { list-style: none; display: grid; gap: .5rem; }
+.attention li { padding-left: 1rem; position: relative; }
+.attention li::before { content: "—"; position: absolute; left: 0; color: var(--lime); }
+
+.dept { margin-top: .625rem; }
+.dept + .dept { border-top: var(--bw) solid var(--line); padding-top: .75rem; margin-top: .75rem; }
+
+.more > summary { list-style: none; cursor: pointer; margin-top: .75rem; }
+.more > summary::-webkit-details-marker { display: none; }
+.more[open] > summary { display: none; }
+
+.source-note { font: 700 .625rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--fg-mute); margin-top: .75rem; }
+.card--ink .source-note { color: var(--on-ink-dim); }
+
+.goal { display: grid; gap: .375rem; }
+.goal + .goal { border-top: var(--bw) solid var(--line); padding-top: .75rem; margin-top: .75rem; }
+.goal__title { font: 800 1.0625rem/1.2 var(--font-display); }
+.goal details { font-size: .9375rem; }
+.goal dt { margin-top: .5rem; }
+
+.week { display: grid; gap: .625rem; }
+@media (min-width: 60rem) { .week { grid-template-columns: 1fr 1fr; } }
+/* В половине сетки «two» план и итоги — друг под другом. */
+.two .week { grid-template-columns: 1fr; }
+@media (min-width: 60rem) {
+  .history { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); align-items: start; }
+  .stack.history > * + * { margin-top: 0; }
+}
+.week__col p + p { margin-top: .375rem; }
+
+.keep-lines { white-space: pre-wrap; }
+
+.calendar { display: grid; gap: 1rem; margin-top: .75rem; overflow-x: auto; padding: .25rem; margin-inline: -.25rem; }
+.calendar__head, .calendar__week { display: grid; grid-template-columns: repeat(7, minmax(2.75rem, 1fr)); gap: .25rem; }
+.calendar__head { font: 700 .625rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--fg-mute); text-align: center; }
+.calendar__week { margin-top: .375rem; }
+.calendar__day { display: grid; align-content: start; gap: .125rem; min-width: 0; min-height: 3.25rem; border: var(--bw) solid var(--surface-edge); border-radius: .75rem; padding: .25rem .125rem; text-align: center; }
+.calendar__day b { font: 800 1rem/1 var(--font-display); }
+.calendar__day span { font: 700 .5625rem/1.2 var(--font-mono); overflow-wrap: anywhere; }
+.calendar__day.is-today { outline: 2px solid var(--fg); outline-offset: 2px; }
+.calendar__day[data-l="1"], .calendar__key[data-l="1"] { background: var(--line); color: var(--fg); }
+.calendar__day[data-l="2"], .calendar__key[data-l="2"] { background: var(--solid); color: var(--on-solid); }
+.calendar__day[data-l="3"], .calendar__key[data-l="3"] { background: var(--lime-soft); color: var(--ink); border-color: var(--lime-edge); }
+.calendar__key { width: 1.25rem; height: .75rem; border: var(--bw) solid var(--surface-edge); border-radius: .25rem; }
+.calendar__day.is-future { color: var(--fg-mute); border-style: dashed; }
+.calendar__day.is-out { border-color: transparent; }
+
+[data-swipe].is-nudge-next { animation: nudge-next .28s ease; }
+[data-swipe].is-nudge-prev { animation: nudge-prev .28s ease; }
+@keyframes nudge-next { 50% { transform: translateX(-.5rem); } }
+@keyframes nudge-prev { 50% { transform: translateX(.5rem); } }
+
+/* Летопись потока: альманах, задания, голоса, неделя словами и текст для чата. */
+.archive-nav { margin-top: .5rem; }
+.archive-nav a[aria-current="page"] { background: var(--solid); color: var(--on-solid); border-color: var(--solid); }
+.week-grid > .week-story, .week-grid > .chat-copy { grid-column: 1 / -1; }
+.week-story__title { margin: .375rem 0 .5rem; }
+.week-story__part { margin-top: 1rem; }
+.week-story__part p + p { margin-top: .5rem; }
+.task-card .h-card { margin: .25rem 0 .375rem; }
+.task-card__insight { margin-top: .5rem; padding-left: .75rem; border-left: var(--bw) solid var(--lime-edge); }
+.almanac { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap); }
+.almanac__title { margin: .25rem 0 .375rem; }
+.almanac__days { margin-top: .75rem; }
+.departments { margin-top: var(--gap); }
+.departments > .label { margin-bottom: .5rem; }
+.week-more .dept { margin-top: .75rem; }
+.dept > p.label { margin-top: .75rem; }
+.dept-list { margin-top: .375rem; gap: .375rem; }
+.dept-list .facts__item { font-weight: 400; }
+.quality-path { margin-top: .5rem; }
+.quality-row { display: grid; grid-template-columns: 3.25rem 1fr; gap: .75rem; align-items: baseline; min-height: 44px; padding-block: .375rem; color: inherit; text-decoration: none; border-bottom: var(--bw) solid var(--line); }
+.quality-row:last-child { border-bottom: 0; }
+.quality-row__words { display: block; color: var(--fg-mute); overflow-wrap: anywhere; }
+.chat-copy__text { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-text); font-size: .9375rem; line-height: 1.5; margin: .75rem 0; padding: .75rem .875rem; border: 1px solid var(--surface-edge); border-radius: .875rem; max-height: 28rem; overflow: auto; }
+.chat-copy__actions { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+@media (min-width: 60rem) {
+    .week-grid > .week-story, .week-grid > .chat-copy { flex-basis: 100%; }
+}

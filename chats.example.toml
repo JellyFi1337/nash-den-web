@@ -1,0 +1,120 @@
+# Образец файла конфигурации чатов.
+# Скопируйте его в chats.toml и заполните. Файл chats.toml содержит настоящие имена
+# и в git не попадает. Описание — в docs/CHATS_CONFIG.md.
+#
+# Идентификаторы чата и тем подскажет бот: команда /chats в личных сообщениях.
+# Имена пользователей и идентификаторы людей: команда /people.
+
+version = 1
+
+[[chats]]
+id = -1001234567890
+name = "МИР ВОЗМОЖНОСТЕЙ | 9 поток"
+
+  # role: journal — утренние декларации и вечерние итоги; project — общественный проект;
+  #       task — задания и инсайты; "" — прочее.
+  # export: выгружать тему в txt.  ai: тема нужна нейросети для отчёта.
+
+  [[chats.topics]]
+  thread_id = 0            # 0 — тема General (у её сообщений нет номера темы)
+  name = "General"
+  file = "general"
+  role = ""
+  export = true
+  ai = false
+
+  [[chats.topics]]
+  thread_id = 12
+  name = "Контексты/Итоги"
+  file = "konteksty-itogi"
+  role = "journal"
+  export = true
+  ai = true
+
+  [[chats.topics]]
+  thread_id = 14
+  name = "Инсайты по заданиям"
+  file = "insayty"
+  role = "task"
+  export = true
+  ai = true
+
+  [[chats.topics]]
+  thread_id = 16
+  name = "ОП"
+  file = "op"
+  role = "project"
+  export = true
+  ai = true
+
+  [[chats.topics]]
+  thread_id = 18
+  name = "ОП ЛИДЕРЫ"
+  file = "op-lidery"
+  role = "project"
+  export = true
+  ai = true
+
+  [[chats.topics]]
+  thread_id = 20
+  name = "Отдел СМИ"
+  file = "otdel-smi"
+  role = "project"
+  export = true
+  ai = true
+
+  [[chats.topics]]
+  thread_id = 22
+  name = "Личные цели"
+  file = "lichnye-tseli"
+  role = ""
+  export = true
+  ai = false
+
+  [[chats.topics]]
+  thread_id = 24
+  name = "ЛИДЕРСКИЙ ЧАТ"
+  file = "liderskiy-chat"
+  role = ""
+  export = true
+  ai = false
+
+  [[chats.topics]]
+  thread_id = 26
+  name = "Игра осознанности"
+  file = "igra-osoznannosti"
+  role = ""
+  export = true
+  ai = false
+
+  [[chats.topics]]
+  thread_id = 28
+  name = "Противосливный кружок"
+  file = "protivoslivnyy-kruzhok"
+  role = ""
+  export = true
+  ai = false
+
+  [[chats.topics]]
+  thread_id = 30
+  name = "Лидерский танец"
+  file = "liderskiy-tanets"
+  role = ""
+  export = false
+  ai = false
+
+  [[chats.topics]]
+  thread_id = 32
+  name = "Плакаты"
+  file = "plakaty"
+  role = ""
+  export = false
+  ai = false
+
+# Кто есть кто. Ключ — имя пользователя Telegram строчными буквами без @.
+# У кого имени пользователя нет — id и числовой идентификатор.
+# Сообщения людей, которых здесь нет, в выгрузки не попадают.
+[people]
+example_lada = "Демина Лада"
+mark_o = "Орлов Марк"
+id123456789 = "Иванова Нина"

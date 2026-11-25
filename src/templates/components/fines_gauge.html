@@ -1,0 +1,6 @@
+{% load ui %}
+<div class="fuse" role="img" aria-label="{{ gauge.spoken }}">{% for cell in gauge.cells %}<span class="bar"><i style="--v:{{ cell }}"></i></span>{% endfor %}</div>
+{% if not compact %}<div class="fuse__scale" aria-hidden="true"><span>0&nbsp;₽</span><span>{{ gauge.threshold }}&nbsp;₽{% if gauge.times %} · <b>{{ gauge.times|typo }}</b>{% endif %}</span></div>{% endif %}
+<p class="fines__lead">{% if compact %}{{ gauge.compact_lead|typo }}{% else %}{{ gauge.lead|typo }}{% endif %}</p>
+<p class="fines__void">{{ "Это не копилка команды: деньги из банка уходят в никуда."|typo }}</p>
+{% if gauge.near %}<p class="fines__near">{{ gauge.near_text|typo }}</p>{% endif %}

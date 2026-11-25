@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Наш день — эталон анимаций (данные вымышленные)</title>
+<link href="fonts.css" rel="stylesheet">
+<style>
+:root{--bg:#F4F2EC;--ink:#0B0B0C;--mute:#6A6A70;--hot:#FF4A1C;--lime:#CFFF3D;--blue:#2D4BFF;
+ --disp:'Inter Tight','Arial Black',Arial,sans-serif;--txt:'Onest','Segoe UI',Arial,sans-serif;--mono:'JetBrains Mono',Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:var(--txt);color:var(--ink);background:#1a1a1e;overflow-x:hidden}
+#stage{max-width:460px;margin:0 auto;min-height:100%;background:var(--bg);position:relative;overflow:hidden}
+.m{font:700 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.screen{display:none;min-height:100vh;min-height:100dvh}.screen.on{display:block}
+/* gate */
+#gate{background:var(--ink);color:#fff;padding:0 26px}
+#gate .in{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:30px 0}
+.lg{width:44px;height:44px;border-radius:50%;border:1.5px dashed currentColor;display:grid;place-items:center;font:700 9px var(--mono);text-transform:uppercase}
+.title{font:900 84px/.9 var(--disp);letter-spacing:-.05em;margin-top:18px;position:relative}
+.gt{position:relative;display:inline-block}
+.split .gt:before,.split .gt:after{content:attr(data-t);position:absolute;left:0;top:0;width:100%}
+.split .gt:before{color:var(--hot);clip-path:inset(24% 0 58% 0);animation:sl1 .22s steps(2) infinite}
+.split .gt:after{color:var(--blue);clip-path:inset(62% 0 20% 0);animation:sl2 .18s steps(2) infinite}
+@keyframes sl1{0%{transform:translateX(-.05em)}50%{transform:translateX(.03em)}100%{transform:translateX(-.02em)}}
+@keyframes sl2{0%{transform:translateX(.06em)}50%{transform:translateX(-.03em)}100%{transform:translateX(.02em)}}
+#log{font:500 13px/1.7 var(--mono);color:var(--lime);margin-top:16px;min-height:66px}
+#codeBox{margin-top:14px;opacity:0;transform:translateY(10px);transition:.4s}
+#codeBox.show{opacity:1;transform:none}
+#code{width:100%;background:transparent;border:1.5px solid #fff;border-radius:18px;padding:16px 18px;font:700 20px var(--mono);letter-spacing:.06em;color:#fff;outline:none;text-transform:uppercase;transition:background .25s,color .25s,border-color .25s,transform .25s}
+#code.ok{background:var(--lime);color:var(--ink);border-color:var(--lime);transform:scale(1.02)}
+#code.bad{animation:shake .32s}
+@keyframes shake{20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
+.btn{display:block;width:100%;text-align:center;padding:15px;border-radius:99px;font:800 16px var(--disp);border:0;cursor:pointer;background:var(--ink);color:#fff;transition:transform .12s}
+.btn:active{transform:scale(.97)}
+.btn.l{background:var(--lime);color:var(--ink)}.btn.h{background:var(--hot)}.btn.o{background:transparent;color:inherit;border:1.5px solid currentColor}
+.hint{font:500 12px var(--mono);color:#9a9aa0;margin-top:12px;line-height:1.6}
+.hint b{color:var(--lime);cursor:pointer;text-decoration:underline}
+#scan{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0 2px,transparent 2px 5px);opacity:0;transition:opacity .3s;z-index:40}
+#scan.on{opacity:1}
+/* home */
+#home{padding:18px 16px 110px}
+.top{display:flex;align-items:center;gap:10px}
+.chip{display:inline-block;font:700 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 11px;border-radius:99px;border:1.5px solid var(--ink)}
+.chip.f{background:var(--ink);color:#fff}
+.w{background:#fff;border:1.5px solid var(--ink);border-radius:22px;padding:16px 18px;margin-top:12px;opacity:0;transform:translateY(16px)}
+.on .w{animation:up .5s cubic-bezier(.2,.8,.2,1) forwards}
+.on .w:nth-child(2){animation-delay:.05s}.on .w:nth-child(3){animation-delay:.12s}.on .w:nth-child(4){animation-delay:.19s}.on .w:nth-child(5){animation-delay:.26s}.on .w:nth-child(6){animation-delay:.33s}.on .w:nth-child(7){animation-delay:.4s}.on .w:nth-child(8){animation-delay:.47s}
+@keyframes up{to{opacity:1;transform:none}}
+.w.k{background:var(--ink);color:#fff}.w.k .m{color:var(--lime)}
+.big{font:900 clamp(40px,12.4vw,56px)/1 var(--disp);letter-spacing:-.045em;display:flex;overflow:hidden;height:1em}
+.big .d{display:inline-block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.roll{display:inline-flex;flex-direction:column;height:1em;overflow:hidden;transition:width .4s}
+.roll span{display:block;height:1em;text-align:center;transition:transform .7s cubic-bezier(.2,.9,.2,1)}
+.bar{height:9px;border-radius:9px;background:#33333a;overflow:hidden}.bar i{display:block;height:100%;border-radius:9px;width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.faces{display:grid;grid-template-columns:repeat(7,1fr);gap:12px 6px;justify-items:center;margin-top:12px}
+.av{width:40px;height:40px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:#1a1a1e;color:#fff;font:800 15px var(--disp);box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ink);transform:scale(0);transition:box-shadow .4s}
+.on .av{animation:pop .4s cubic-bezier(.3,1.5,.5,1) forwards}
+@keyframes pop{to{transform:scale(1)}}
+.av.done{box-shadow:0 0 0 2px #fff,0 0 0 4px #9fd400}
+.av.flash{animation:ring .9s ease-out}
+@keyframes ring{0%{box-shadow:0 0 0 2px #fff,0 0 0 4px #9fd400,0 0 0 4px rgba(207,255,61,.9)}100%{box-shadow:0 0 0 2px #fff,0 0 0 4px #9fd400,0 0 0 26px rgba(207,255,61,0)}}
+.quote{font:800 19px/1.2 var(--disp);margin-top:8px}
+/* slider */
+.sl{margin-top:14px;touch-action:none;user-select:none}
+.sl .hd{display:flex;justify-content:space-between;align-items:flex-end}
+.sl .val{font:900 44px/1 var(--disp);letter-spacing:-.04em;transition:transform .12s}
+.sl .val small{font-size:18px}
+.track{height:48px;border-radius:26px;border:1.5px solid var(--ink);background:#fff;position:relative;margin-top:8px;overflow:hidden;cursor:grab}
+.fill{position:absolute;left:0;top:0;bottom:0;background:var(--ink);border-radius:26px;width:0;transition:background .25s}
+.knob{position:absolute;top:4px;width:38px;height:38px;border-radius:50%;background:var(--lime);border:1.5px solid var(--ink);left:0;transition:background .25s,transform .12s}
+.track.full .fill{background:var(--lime)}.track.full .knob{background:var(--ink)}
+.track.drag .knob{transform:scale(1.12)}
+.tick{position:absolute;top:18px;bottom:18px;width:1.5px;background:rgba(11,11,12,.22)}
+.pulse{animation:pl .5s}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(207,255,61,.9)}100%{box-shadow:0 0 0 22px rgba(207,255,61,0)}}
+/* support */
+.row{display:flex;gap:12px;align-items:center}
+.row img{width:52px;height:52px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #fff,0 0 0 4px #9fd400}
+.heart{width:54px;height:54px;border-radius:50%;border:1.5px solid var(--blue);background:#fff;display:grid;place-items:center;cursor:pointer;flex:none;transition:background .2s,transform .15s}
+.heart.on{background:var(--blue)}.heart.on svg{stroke:#fff}
+.heart:active{transform:scale(.92)}
+#wave path{stroke-dasharray:300;stroke-dashoffset:300}
+#wave.go path{animation:dash .8s ease-out forwards}
+@keyframes dash{to{stroke-dashoffset:0}}
+#cnt{display:inline-block;transition:transform .2s}
+#cnt.bump{transform:scale(1.5)}
+/* toast, overlays */
+#toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,40px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:99px;font:700 13px var(--txt);opacity:0;transition:.35s cubic-bezier(.2,.9,.2,1);z-index:30;white-space:nowrap;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#all{position:fixed;inset:0;background:var(--lime);display:grid;place-items:center;z-index:35;clip-path:circle(0 at 50% 30%);transition:clip-path .55s cubic-bezier(.3,.8,.2,1);pointer-events:none}
+#all.on{clip-path:circle(150% at 50% 30%)}
+#all div{text-align:center}
+#all b{display:block;font:900 110px/1 var(--disp);letter-spacing:-.05em}
+#reveal{position:fixed;inset:0;background:var(--bg);z-index:25;clip-path:circle(0 at 50% 62%);pointer-events:none}
+#reveal.on{transition:clip-path .6s cubic-bezier(.3,.8,.2,1);clip-path:circle(150% at 50% 62%)}
+#nav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);height:60px;border-radius:32px;background:var(--ink);display:none;align-items:center;gap:6px;padding:0 9px;z-index:20}
+#nav span{width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
+#nav span:first-child{background:var(--lime)}
+#sent{display:grid;place-items:center;height:0;overflow:hidden;transition:height .4s}
+#sent.on{height:96px}
+#sent svg path{stroke-dasharray:40;stroke-dashoffset:40}
+#sent.on svg path{animation:dash2 .45s .25s ease-out forwards}
+@keyframes dash2{to{stroke-dashoffset:0}}
+.fold{animation:fold .45s ease-in forwards}
+@keyframes fold{to{transform:scale(.6) translateY(-40px);opacity:0;height:0;margin:0;padding:0}}
+.demo{border:1.5px dashed var(--ink);border-radius:22px;padding:14px;margin-top:16px}
+.demo .btn{margin-top:8px;font-size:14px;padding:12px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s !important;transition-duration:.01s !important}}
+</style>
+</head>
+<body>
+<!-- Эталон движения для «Наш день». Имена и тексты вымышленные. Названия классов здесь свои — для сайта берите классы из ui.css, а отсюда переносите логику и тайминги анимаций. -->
+<svg width="0" height="0" style="position:absolute"><defs>
+ <filter id="rip" x="-10%" y="-5%" width="120%" height="110%"><feTurbulence id="turb" type="fractalNoise" baseFrequency="0.006 0.1" numOctaves="2" seed="3"/><feDisplacementMap id="disp" in="SourceGraphic" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+</defs></svg>
+
+<div id="stage">
+  <!-- вход -->
+  <section class="screen on" id="gate"><div class="in">
+    <span class="lg">лого</span>
+    <div class="title" id="title"><span class="gt" data-t="НАШ">НАШ</span><br><span class="gt" data-t="ДЕНЬ">ДЕНЬ</span></div>
+    <div id="log"></div>
+    <div id="codeBox">
+      <input id="code" placeholder="код дня" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button class="btn l" id="enter" style="margin-top:10px">Войти</button>
+      <div class="hint" id="hint">Демо-код: <b id="paste">ВАЖНО2026+1</b> — нажмите, чтобы подставить.<br>Попробуйте и неверный код.</div>
+    </div>
+  </div></section>
+
+  <!-- главная -->
+  <section class="screen" id="home">
+    <div class="top"><span class="lg" style="width:34px;height:34px;font-size:7px">лого</span><span class="m" style="color:var(--ink)">ВТ 29.09</span><span style="flex:1"></span><span class="chip f">день 09/58</span></div>
+    <div class="w k"><div class="m">пульс дня</div>
+      <div style="display:flex;gap:18px;margin-top:8px">
+        <div style="flex:1"><div class="big" style="color:var(--lime)" id="o1"></div><div style="font-size:13px;opacity:.85;margin-top:3px">утро · все на связи</div><div class="bar" style="margin-top:10px"><i id="b1" style="background:var(--lime)"></i></div></div>
+        <div style="flex:1"><div class="big" id="o2"></div><div style="font-size:13px;opacity:.85;margin-top:3px" id="o2t">вечер · ждём одного</div><div class="bar" style="margin-top:10px"><i id="b2" style="background:#fff"></i></div></div>
+      </div></div>
+    <div class="w"><div class="m">команда сейчас</div><div class="faces" id="faces"></div></div>
+    <div class="w"><div class="m">главное за день</div><div style="font-size:15px;line-height:1.5;margin-top:6px">Утро — на 1 ч 20 мин раньше, чем вчера. Команда проекта вышла на парки.</div><div class="quote">«Поддержка — это круто»</div><div class="m" style="margin-top:3px">Марк · 23:11</div></div>
+
+    <div class="w" id="formCard"><div class="m">итог дня · этап 2</div>
+      <div id="form">
+        <div class="sl" data-v="90"><div class="hd"><span class="m">контекст</span><span class="val">0<small>%</small></span></div><div class="track"><div class="fill"></div><div class="knob"></div></div></div>
+        <div class="sl" data-v="65"><div class="hd"><span class="m">цели</span><span class="val">0<small>%</small></span></div><div class="track"><div class="fill"></div><div class="knob"></div></div></div>
+        <button class="btn h" id="close" style="margin-top:16px">Закрыть день</button>
+      </div>
+      <div id="sent"><svg width="70" height="70" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#CFFF3D" stroke="#0B0B0C" stroke-width="1"/><path d="M6.500 12.500l3.500 3.500 7.500-8.500" fill="none" stroke="#0B0B0C" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+
+    <div class="w"><div class="m">поддержка</div>
+      <div class="row" style="margin-top:10px"><span class="av done" style="transform:none;width:52px;height:52px;flex:none">М</span><div style="flex:1"><b>Марк</b><div style="font-size:14px;margin-top:2px">«День был трудноват… Поддержка — это круто»</div></div></div>
+      <div class="row" style="margin-top:12px"><svg id="wave" style="flex:1;height:54px" viewBox="0 0 240 54" preserveAspectRatio="none"><path d="M236 27 Q 190 -6 150 27 T 70 27 T 4 27" fill="none" stroke="#2D4BFF" stroke-width="3" stroke-linecap="round"/></svg>
+        <div class="heart" id="heart"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2D4BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.400-7-10a4 4 0 0 1 7-2.500A4 4 0 0 1 19 10c0 5.600-7 10-7 10z"/></svg></div></div>
+      <div class="m" style="margin-top:6px;text-align:right">я рядом · <span id="cnt" style="color:var(--blue)">6</span></div></div>
+
+    <div class="demo"><div class="m">панель демо · в настоящем сайте её нет</div>
+      <button class="btn o" id="d1">Последний итог пришёл → 19 из 19</button>
+      <button class="btn o" id="d2">Наступил новый день → смена кода</button>
+      <button class="btn o" id="d3">Повторить вход со сбоем</button></div>
+  </section>
+</div>
+<div id="nav"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.500 1.500M17.500 17.500L19 19M5 19l1.500-1.500M17.500 6.500L19 5"/></svg></span><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><circle cx="17.500" cy="9" r="2.500"/><path d="M17 14.500a5 5 0 0 1 4.500 5.500"/></svg></span><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/></svg></span></div>
+<div id="reveal"></div><div id="all"><div><b>19/19</b><span class="m" style="color:var(--ink);font-size:14px">все на связи</span></div></div>
+<div id="toast"></div><div id="scan"></div>
+
+<script>
+const $=id=>document.getElementById(id), stage=$('stage'), disp=$('disp'), turb=$('turb');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const CODE='ВАЖНО2026+1';
+const T=[['Ася',null],['Борис',null],['Вера',null],['Глеб',null],['Дина',null],['Егор',null],['Жанна',null],['Захар',null],['Инна',null],['Кира',null],['Лада',null],['Марк',null],['Нина',null],['Олег',null],['Павел',null],['Рита',null],['Семён',null],['Тая',null],['Ульяна',null]];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let skip=false;
+
+/* рябь: смещение картинки по шуму, затухает к нулю */
+function ripple(ms,from){
+  return new Promise(res=>{
+    if(reduce){res();return}
+    stage.style.filter='url(#rip)'; $('scan').classList.add('on');
+    const t0=performance.now(); let last=0,seed=1,over=false;
+    const finish=()=>{ if(over) return; over=true; disp.setAttribute('scale',0); stage.style.filter=''; $('scan').classList.remove('on'); res() };
+    setTimeout(finish,ms+200);
+    (function step(now){
+      const t=Math.min((now-t0)/ms,1);
+      if(over) return;
+      if(t>=1||skip){finish();return}
+      if(now-last>55){last=now;seed=(seed%40)+1;turb.setAttribute('seed',seed);
+        turb.setAttribute('baseFrequency',(0.003+Math.random()*0.006).toFixed(4)+' '+(0.05+0.12*(1-t)).toFixed(3));
+        const jerk=Math.random()<0.18?1.8:1;
+        disp.setAttribute('scale',(from*Math.pow(1-t,1.6)*jerk).toFixed(1))}
+      requestAnimationFrame(step)})(t0)});
+}
+async function type(line,done){
+  const el=document.createElement('div'); $('log').appendChild(el);
+  for(const ch of line){ if(skip){el.textContent=line;break} el.textContent+=ch; await sleep(14) }
+  if(done) el.style.color='#fff';
+}
+async function intro(){
+  skip=false; $('log').innerHTML=''; $('codeBox').classList.remove('show'); $('title').classList.add('split');
+  $('code').value=''; $('code').className='';
+  const r=ripple(1800,70);
+  await type('сбой контекста…'); await sleep(skip?0:260);
+  await type('пересборка дня…'); await sleep(skip?0:420);
+  $('title').classList.remove('split');
+  await type('контекст восстановлен ✓',true);
+  await r; $('codeBox').classList.add('show');
+}
+$('gate').addEventListener('pointerdown',e=>{ if(!$('codeBox').classList.contains('show')) skip=true });
+
+/* код дня */
+$('paste').onclick=()=>{ $('code').value=CODE; $('code').focus() };
+async function tryCode(){
+  const v=$('code').value.trim().toUpperCase();
+  if(v===CODE){
+    $('code').classList.add('ok'); await sleep(420);
+    $('reveal').classList.add('on'); await sleep(560);
+    show('home'); $('reveal').style.transition='opacity .3s'; $('reveal').style.opacity=0;
+    await sleep(320); $('reveal').className=''; $('reveal').style.cssText='';
+    startHome();
+  }else{
+    $('code').classList.remove('bad'); void $('code').offsetWidth; $('code').classList.add('bad');
+    $('title').classList.add('split'); ripple(320,18).then(()=>$('title').classList.remove('split'));
+    $('hint').innerHTML='Код не подошёл. Код дня — у бота.<br>Демо-код: <b id="paste">'+CODE+'</b>'; $('paste').onclick=()=>{ $('code').value=CODE };
+  }
+}
+$('enter').onclick=tryCode; $('code').addEventListener('keydown',e=>{ if(e.key==='Enter') tryCode() });
+
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); $('nav').style.display=id==='home'?'flex':'none'; scrollTo(0,0) }
+
+/* счётчик-одометр */
+function odo(el,n,total){
+  el.innerHTML=''; const s=String(n).padStart(2,'0');
+  [...s].forEach((d,i)=>{ const r=document.createElement('span'); r.className='roll';
+    r.innerHTML=Array.from({length:10},(_,k)=>`<span>${k}</span>`).join(''); el.appendChild(r);
+    const m=document.createElement('span'); m.textContent=d; m.style.cssText='position:absolute;visibility:hidden'; el.appendChild(m); r.style.width=(m.getBoundingClientRect().width+1)+'px'; m.remove();
+    void r.offsetHeight; setTimeout(()=>r.querySelectorAll('span').forEach(x=>x.style.transform=`translateY(${-d}em)`),40) });
+  const t=document.createElement('span'); t.textContent='/'+total; el.appendChild(t);
+}
+let evening=18;
+function startHome(){
+  $('faces').innerHTML=T.map((t,i)=>{ const done=i!==9; const st=`animation-delay:${0.25+i*0.035}s`;
+    return t[1]?`<img class="av ${done?'done':''}" data-i="${i}" style="${st}" src="img/${t[1]}.jpg" alt="${t[0]}">`:`<span class="av ${done?'done':''}" data-i="${i}" style="${st}">${t[0][0]}</span>` }).join('');
+  evening=18; odo($('o1'),19,19); odo($('o2'),18,19); $('o2').style.color=''; $('o2t').textContent='вечер · ждём одного';
+  $('b1').style.width='0'; $('b2').style.width='0';
+  setTimeout(()=>{ $('b1').style.width='100%'; $('b2').style.width='94.7%' },150);
+  document.querySelectorAll('.sl').forEach(s=>setTimeout(()=>animateTo(s,+s.dataset.v),700));
+  $('form').className=''; $('form').style.display=''; $('sent').classList.remove('on');
+}
+
+/* ползунок */
+function setVal(s,v,quiet){
+  v=Math.max(0,Math.min(100,Math.round(v/5)*5));
+  const tr=s.querySelector('.track'), w=tr.clientWidth-46;
+  s.querySelector('.fill').style.width=(v/100*w+44)+'px';
+  s.querySelector('.knob').style.left=(v/100*w+3)+'px';
+  const val=s.querySelector('.val');
+  if(+s.dataset.cur!==v){ val.firstChild.nodeValue=v;
+    if(!quiet&&v%10===0){ navigator.vibrate&&navigator.vibrate(8); val.style.transform='scale(1.12)'; setTimeout(()=>val.style.transform='',110) }
+    const full=v===100; if(full&&!tr.classList.contains('full')){ tr.classList.remove('pulse'); void tr.offsetWidth; tr.classList.add('pulse') }
+    tr.classList.toggle('full',full); s.dataset.cur=v }
+}
+function animateTo(s,target){ setTimeout(()=>setVal(s,target,true),1200); const t0=performance.now(); (function f(now){ const t=Math.min((now-t0)/900,1), e=1-Math.pow(1-t,3); setVal(s,target*e,true); if(t<1) requestAnimationFrame(f) })(t0) }
+document.querySelectorAll('.sl').forEach(s=>{
+  const tr=s.querySelector('.track');
+  for(let i=1;i<10;i++){ const k=document.createElement('i'); k.className='tick'; k.style.left=(i*10)+'%'; tr.appendChild(k) }
+  const move=e=>{ const r=tr.getBoundingClientRect(); setVal(s,(e.clientX-r.left-22)/(r.width-46)*100) };
+  tr.addEventListener('pointerdown',e=>{ tr.setPointerCapture(e.pointerId); tr.classList.add('drag'); move(e) });
+  tr.addEventListener('pointermove',e=>{ if(tr.classList.contains('drag')) move(e) });
+  ['pointerup','pointercancel'].forEach(n=>tr.addEventListener(n,()=>tr.classList.remove('drag')));
+});
+
+/* отправка итога */
+$('close').onclick=async()=>{ $('form').classList.add('fold'); await sleep(430); $('form').style.display='none'; $('sent').classList.add('on'); toast('Итог записан · команда видит ваш день') };
+
+/* я рядом */
+let sup=6;
+$('heart').onclick=()=>{ const on=$('heart').classList.toggle('on'); sup+=on?1:-1;
+  if(on){ $('wave').classList.remove('go'); void $('wave').getBoundingClientRect(); $('wave').classList.add('go'); navigator.vibrate&&navigator.vibrate(12) } else $('wave').classList.remove('go');
+  setTimeout(()=>{ $('cnt').textContent=sup; $('cnt').classList.add('bump'); setTimeout(()=>$('cnt').classList.remove('bump'),200) },on?650:0) };
+
+function toast(t){ $('toast').textContent=t; $('toast').classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>$('toast').classList.remove('on'),2600) }
+
+/* панель демо */
+$('d1').onclick=async()=>{ if(evening===19){ toast('Уже 19 из 19'); return } scrollTo({top:0,behavior:'smooth'}); await sleep(450);
+  const a=document.querySelector('.av[data-i="9"]'); a.classList.add('done','flash'); toast('Кира закрыла день · 23:58');
+  evening=19; odo($('o2'),19,19); $('o2').style.color='var(--lime)'; $('o2t').textContent='вечер · все на связи'; $('b2').style.width='100%'; $('b2').style.background='var(--lime)';
+  await sleep(1100); $('all').classList.add('on'); navigator.vibrate&&navigator.vibrate([20,60,20]); await sleep(1500); $('all').classList.remove('on') };
+$('d2').onclick=async()=>{ toast('05:00 · код дня сменился'); await ripple(700,60); show('gate'); $('log').innerHTML='<div>новый день. новый код.</div><div style="color:#fff">вчерашний код больше не действует</div>';
+  $('code').value=''; $('code').className=''; $('codeBox').classList.add('show'); $('title').classList.add('split'); setTimeout(()=>$('title').classList.remove('split'),700) };
+$('d3').onclick=()=>{ show('gate'); intro() };
+
+addEventListener('resize',()=>document.querySelectorAll('.sl').forEach(s=>{ const v=+s.dataset.cur||0; s.dataset.cur=-1; setVal(s,v,true) }));
+if(location.hash==='#home'){ show('home'); startHome() } else intro();
+</script>
+</body>
+</html>

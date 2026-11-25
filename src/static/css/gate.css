@@ -1,0 +1,53 @@
+/* ---------- 13. Вход: «сбой» ---------- */
+.gate { min-height: 100dvh; background: var(--ink); color: var(--gate-fg); display: flex; flex-direction: column; justify-content: center; padding: 1.875rem 1.625rem; max-width: 30rem; margin: 0 auto; }
+.gate__title { font: 900 clamp(4rem, 22vw, 5.75rem)/.9 var(--font-display); letter-spacing: -.05em; margin-top: 1.125rem; }
+.gate__log { font: 500 .8125rem/1.7 var(--font-mono); color: var(--lime); margin-top: 1rem; min-height: 4.125rem; }
+.gate__log .is-ok { color: var(--gate-fg); }
+.gate__hint { font: 500 .75rem/1.6 var(--font-mono); color: var(--gate-mute); margin-top: .75rem; }
+.code-input { width: 100%; background: transparent; border: var(--bw) solid var(--gate-fg); border-radius: 1.125rem; padding: 1rem 1.125rem; font: 700 1.25rem var(--font-mono); letter-spacing: .06em; color: var(--gate-fg); text-transform: uppercase; outline: none; transition: background .25s, color .25s, border-color .25s, transform .25s; }
+.code-input.is-ok { background: var(--lime); color: var(--ink); border-color: var(--lime); transform: scale(1.02); }
+.code-input.is-bad { animation: shake .32s; }
+@keyframes shake { 20% { transform: translateX(-9px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(4px); } }
+/* расслоение цветов: <span class="glitch" data-t="НАШ">НАШ</span>, включается классом .is-split на родителе */
+.glitch { position: relative; display: inline-block; }
+.is-split .glitch::before, .is-split .glitch::after { content: attr(data-t); position: absolute; left: 0; top: 0; width: 100%; }
+.is-split .glitch::before { color: var(--hot); clip-path: inset(24% 0 58% 0); animation: split-a .22s steps(2) infinite; }
+.is-split .glitch::after { color: var(--blue); clip-path: inset(62% 0 20% 0); animation: split-b .18s steps(2) infinite; }
+@keyframes split-a { 0% { transform: translateX(-.05em); } 50% { transform: translateX(.03em); } 100% { transform: translateX(-.02em); } }
+@keyframes split-b { 0% { transform: translateX(.06em); } 50% { transform: translateX(-.03em); } 100% { transform: translateX(.02em); } }
+.scanlines { position: fixed; inset: 0; z-index: 40; pointer-events: none; opacity: 0; transition: opacity .3s; background: repeating-linear-gradient(0deg, var(--scanline) 0 2px, transparent 2px 5px); }
+.scanlines.is-on { opacity: 1; }
+
+/* Поле появляется после последовательности. Без скриптов его показывает noscript. */
+.gate__panel { margin-top: .875rem; opacity: 0; transform: translateY(.625rem); pointer-events: none; transition: opacity .4s, transform .4s; }
+.gate.is-ready .gate__panel { opacity: 1; transform: none; pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) {
+  .gate__panel { opacity: 1; transform: none; pointer-events: auto; }
+}
+.gate__panel .btn { margin-top: .625rem; }
+.gate__code-row { display: flex; align-items: stretch; gap: .5rem; }
+.gate__code-row .code-input { min-width: 0; flex: 1; }
+.gate__code-row .gate__paste { width: auto; min-width: 2.75rem; min-height: 2.75rem; margin-top: 0; padding: .5rem .75rem; font-size: .875rem; }
+.gate__paste[hidden] { display: none; }
+.gate__format { margin-top: .5rem; }
+.gate__panel .btn { min-height: 2.75rem; }
+.code-input::placeholder { color: var(--gate-mute); opacity: 1; }
+.code-input:focus-visible { outline: var(--bw) solid var(--lime); outline-offset: .25rem; }
+.gate__hint [role="timer"] { font-variant-numeric: tabular-nums; }
+.code-input:disabled, .btn:disabled { opacity: .55; cursor: default; }
+.gate-filter { position: absolute; width: 0; height: 0; }
+.gate-reveal { position: fixed; inset: 0; background: var(--bg); z-index: 25; clip-path: circle(0 at 50% 62%); pointer-events: none; }
+.gate-reveal.is-on { transition: clip-path .6s cubic-bezier(.3, .8, .2, 1); clip-path: circle(150% at 50% 62%); }
+/* Образец входа на /_ui/ не меняет фон всей страницы. */
+body:has(> .gate) { background: var(--ink); }
+
+/* Повтор заставки: знак — кнопка без рамки. Подсказка проявляется только при наведении
+   и фокусе с клавиатуры, чтобы не отвлекать от поля кода. */
+.gate__top { display: flex; align-items: center; gap: .5rem; min-height: 2.75rem; }
+.gate__replay { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; margin: 0 0 0 -.125rem; border-radius: 50%; transition: transform .6s var(--ease), opacity .3s; }
+.gate__replay:hover, .gate__replay:focus-visible { transform: rotate(-16deg) scale(1.04); }
+.gate__replay:active { transform: rotate(-16deg) scale(.92); }
+.gate__replay:focus-visible { outline-color: var(--lime); }
+.gate__replay-hint { font: 500 .6875rem var(--font-mono); letter-spacing: .06em; color: var(--gate-mute); opacity: 0; transform: translateX(-.375rem); transition: opacity .3s, transform .3s; pointer-events: none; }
+.gate__replay:hover + .gate__replay-hint, .gate__replay:focus-visible + .gate__replay-hint { opacity: 1; transform: none; }
+.gate.is-replaying .gate__replay { pointer-events: none; opacity: .6; }

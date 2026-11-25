@@ -1,0 +1,4 @@
+.kit-h { font: 700 .75rem var(--font-mono); letter-spacing: .1em; text-transform: uppercase; margin: 2.5rem 0 .75rem; padding-top: 1rem; border-top: 1.5px solid var(--surface-edge); }
+.kit-note { color: var(--fg-mute); font-size: .875rem; margin-bottom: .75rem; }
+.kit-dark { background: var(--surface-ink); border-radius: var(--r-card); overflow: hidden; }
+.kit-dark .gate { min-height: 34rem; }

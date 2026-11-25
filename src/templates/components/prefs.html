@@ -1,0 +1,93 @@
+<details class="prefs" data-prefs>
+    <summary class="chip prefs__toggle" aria-label="Вид и движение" title="Вид и движение">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h8M18 7h2M4 17h2M12 17h8"/><circle cx="15" cy="7" r="2.500"/><circle cx="9" cy="17" r="2.500"/></svg>
+    </summary>
+    <div class="prefs__panel" data-prefs-panel>
+        <div class="prefs__head">
+            <div class="prefs__handle" data-prefs-handle aria-hidden="true"></div>
+            <div>
+                <div class="label">настройки</div>
+                <div class="h-card" id="prefs-title">Вид и движение</div>
+            </div>
+            <button class="prefs__done" type="button" data-prefs-done aria-label="Закрыть меню">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+        </div>
+
+        <fieldset class="prefs__group prefs__theme">
+            <legend class="label">тема</legend>
+            <div class="seg">
+                <label class="seg__opt"><input type="radio" name="theme" value="light"><span>светлая</span></label>
+                <label class="seg__opt"><input type="radio" name="theme" value="dark"><span>тёмная</span></label>
+                <label class="seg__opt"><input type="radio" name="theme" value="auto"><span>как в системе</span></label>
+            </div>
+            <p class="prefs__note" data-prefs-note="theme" hidden></p>
+        </fieldset>
+
+        <fieldset class="prefs__group">
+            <legend class="label">движение</legend>
+            <div class="seg">
+                <label class="seg__opt"><input type="radio" name="motion" value="full"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12c2.500-4 5-4 7.500 0s5 4 7.500 0 3.500-3 5-2"/></svg>полное</span></label>
+                <label class="seg__opt"><input type="radio" name="motion" value="calm"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12h18"/></svg>спокойное</span></label>
+            </div>
+            <p class="prefs__note" data-prefs-note="motion" hidden></p>
+        </fieldset>
+
+        <fieldset class="prefs__group prefs__bg">
+            <legend class="label">фон</legend>
+            <div class="seg seg--tiles seg--scenes">
+                <label class="seg__opt"><input type="radio" name="scene" value="auto"><span>{% include "components/scene_preview.html" with scene="auto" %}<span>авто <small data-prefs-auto-caption></small></span></span></label>
+                <label class="seg__opt"><input type="radio" name="scene" value="morning"><span>{% include "components/scene_preview.html" with scene="morning" %}утро</span></label>
+                <label class="seg__opt"><input type="radio" name="scene" value="day"><span>{% include "components/scene_preview.html" with scene="day" %}день</span></label>
+                <label class="seg__opt"><input type="radio" name="scene" value="evening"><span>{% include "components/scene_preview.html" with scene="evening" %}вечер</span></label>
+                <label class="seg__opt"><input type="radio" name="scene" value="night"><span>{% include "components/scene_preview.html" with scene="night" %}ночь</span></label>
+            </div>
+            <p class="prefs__note" data-prefs-note="scene" hidden></p>
+        </fieldset>
+
+        <fieldset class="prefs__group prefs__strength">
+            <legend class="label">сила фона</legend>
+            <div class="seg">
+                <label class="seg__opt"><input type="radio" name="bg" value="off"><span>нет</span></label>
+                <label class="seg__opt"><input type="radio" name="bg" value="quiet"><span>тихо</span></label>
+                <label class="seg__opt"><input type="radio" name="bg" value="normal"><span>обычно</span></label>
+                <label class="seg__opt"><input type="radio" name="bg" value="bright"><span>ярко</span></label>
+            </div>
+            <p class="prefs__note" data-prefs-note="economy" hidden></p>
+        </fieldset>
+
+        <fieldset class="prefs__group">
+            <legend class="label">палитра</legend>
+            <div class="swatches">
+                <label class="swatch swatch--soft"><input type="radio" name="palette" value="soft"><span class="swatch__body"><span class="swatch__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="swatch__name">мягкая</span></span></label>
+                <label class="swatch swatch--vivid"><input type="radio" name="palette" value="vivid"><span class="swatch__body"><span class="swatch__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="swatch__name">яркая</span></span></label>
+                <label class="swatch swatch--quiet"><input type="radio" name="palette" value="quiet"><span class="swatch__body"><span class="swatch__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="swatch__name">тихая</span></span></label>
+            </div>
+        </fieldset>
+
+        <fieldset class="prefs__group">
+            <legend class="label">размер текста</legend>
+            <div class="seg seg--scale">
+                <label class="seg__opt"><input type="radio" name="scale" value="1"><span><b aria-hidden="true">А</b><span class="visually-hidden">обычный</span></span></label>
+                <label class="seg__opt"><input type="radio" name="scale" value="2"><span><b aria-hidden="true">А</b><span class="visually-hidden">крупнее</span></span></label>
+                <label class="seg__opt"><input type="radio" name="scale" value="3"><span><b aria-hidden="true">А</b><span class="visually-hidden">самый крупный</span></span></label>
+            </div>
+        </fieldset>
+
+        <fieldset class="prefs__group">
+            <legend class="label">эффекты</legend>
+            <label class="switch prefs__comets"><input type="checkbox" name="comets" role="switch"><span class="switch__track" aria-hidden="true"></span><span class="switch__text">кометы на фоне</span></label>
+            <label class="switch"><input type="checkbox" name="spot" role="switch"><span class="switch__track" aria-hidden="true"></span><span class="switch__text">свет под курсором и касанием</span></label>
+            <label class="switch"><input type="checkbox" name="sparks" role="switch"><span class="switch__track" aria-hidden="true"></span><span class="switch__text">искры и конфетти</span></label>
+        </fieldset>
+
+        <div class="prefs__foot">
+            <button class="prefs__reset" type="button" data-prefs-reset>сбросить вид</button>
+            <form method="post" action="{% url 'exit' %}">
+                {% csrf_token %}
+                <button class="btn btn--ghost prefs__exit" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></svg>Выйти к вводу кода</button>
+            </form>
+        </div>
+        <p class="prefs__fine">Выбор хранится в этом браузере. Для входа снова понадобится код дня у бота.</p>
+    </div>
+</details>

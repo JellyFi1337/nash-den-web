@@ -1,0 +1,5 @@
+{% if url %}
+<a class="chip {{ kind_class }}" href="{{ url }}">{{ text }}</a>
+{% else %}
+<span class="chip {{ kind_class }}">{{ text }}</span>
+{% endif %}

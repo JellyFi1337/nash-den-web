@@ -1,0 +1,22 @@
+{% load static %}
+<header class="topbar">
+    <a class="brand" href="{% url 'home' %}" aria-label="Наш день — на главную">
+        <img class="brand__mark" src="{% if shell.logo_url %}{{ shell.logo_url }}{% else %}{% static 'img/brand/mark.svg' %}{% endif %}" width="34" height="34" alt="">
+        <span class="brand__word">наш день</span>
+    </a>
+    <nav class="topbar__nav" aria-label="Разделы">
+        <a href="{% url 'home' %}" {% if shell.section == "today" %}aria-current="page"{% endif %}>Сегодня</a>
+        <a href="{% url 'team' %}" {% if shell.section == "team" %}aria-current="page"{% endif %}>Команда</a>
+        <a href="{% url 'days' %}" {% if shell.section == "days" %}aria-current="page"{% endif %}>Дни</a>
+        <a href="{% url 'project' %}" {% if shell.section == "project" %}aria-current="page"{% endif %}>Проект</a>
+    </nav>
+    <span class="label" style="color:var(--fg)">{{ shell.date_label }}</span>
+    <span class="topbar__spacer"></span>
+    {% if shell.in_stream %}<span class="chip chip--fill" title="{{ shell.stage_spoken }}"><span class="chip__word">ступень </span>{{ shell.stage_number }} · <span class="chip__word">день </span>{{ shell.stage_day }}<span class="visually-hidden">, {{ shell.stage_spoken }}</span></span>{% endif %}
+    <div class="topbar__tools">
+        <button class="chip search-trigger" type="button" aria-label="Поиск по дням" aria-haspopup="dialog" aria-controls="search-dialog" data-search-open>
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+        </button>
+        {% include "components/prefs.html" %}
+    </div>
+</header>

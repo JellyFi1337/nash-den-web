@@ -1,0 +1,22 @@
+{% load ui %}
+<a class="{% if as_card %}card {% endif %}person" href="{{ url }}" data-person-link>
+    <div class="person__head">
+        {% avatar letter=letter status=status photo=photo face=slug %}
+        <div{% if as_card %} style="flex:1"{% endif %}>
+            <div class="person__name" data-member-name>{{ name }}{% if badge %} <span class="chip chip--hot">ДР сегодня</span>{% endif %}</div>
+            {% if meta %}<div class="person__meta">{{ meta }}</div>{% endif %}
+        </div>
+    </div>
+    {% if wait %}
+    <div class="person__wait">{{ wait }}</div>
+    {% else %}
+    {% for scale in scales %}
+    <div class="person__scale">
+        <span class="label">{{ scale.label }}</span>
+        {% bar value=scale.value kind=scale.kind %}
+        <b>{{ scale.text }}</b>
+    </div>
+    {% endfor %}
+    {% if words %}<div class="person__text">{{ words|typo }}</div>{% endif %}
+    {% endif %}
+</a>

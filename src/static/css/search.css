@@ -1,0 +1,44 @@
+.topbar__tools { display: flex; align-items: center; gap: .5rem; }
+.search-trigger, .search-close { min-width: 44px; min-height: 44px; justify-content: center; }
+.search-trigger svg { fill: none; stroke: currentColor; stroke-width: 2; }
+.search-dialog { width: min(42rem, calc(100% - 2rem)); max-height: min(46rem, calc(100dvh - 2rem)); margin: auto; padding: 1.25rem; color: var(--fg); background: var(--surface); border: var(--bw) solid var(--surface-edge); border-radius: var(--r-card); overflow-y: auto; }
+.search-dialog::backdrop { background: var(--scrim); }
+html:has(.search-dialog[open]) { overflow: hidden; scrollbar-gutter: stable; }
+.search-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.search-input { width: 100%; min-height: 48px; margin-top: 1rem; padding: .75rem; border: var(--bw) solid var(--line); border-radius: var(--r-pill); background: var(--bg); color: var(--fg); font: inherit; }
+.search-input::placeholder { color: var(--fg-mute); }
+.search-status { margin: 1rem 0; }
+.search-history { display: flex; flex-wrap: wrap; gap: .5rem; }
+.search-history[hidden] { display: none; }
+.search-recent { min-height: 44px; max-width: 100%; overflow-wrap: anywhere; white-space: normal; }
+.search-date { margin-top: 1.25rem; }
+.search-result { display: grid; gap: .375rem; padding: .75rem; min-height: 44px; border-bottom: var(--bw) solid var(--line); overflow-wrap: anywhere; }
+.search-result:hover, .search-result.is-selected { background: var(--track); border-radius: var(--r-ctl); }
+.search-keys { color: var(--fg-mute); font-size: .75rem; margin-top: 1.5rem; }
+.week-link { display: inline-flex; align-items: center; min-width: 2.75rem; min-height: 2.75rem; }
+.week-summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--gap); margin-top: var(--gap); }
+.week-head { margin: 1rem 0 var(--gap); }
+.week-head .h-page { margin-top: .375rem; }
+.week-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--gap); align-items: start; }
+.week-day { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .75rem; min-height: 44px; padding-block: .5rem; border-bottom: var(--bw) solid var(--line); }
+.week-day:last-child { border-bottom: 0; }
+.week-day time { font-family: var(--font-mono); font-size: .75rem; }
+.week-figures { display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-top: 1rem; }
+.week-figures .num { font-size: clamp(2rem, 3vw, 3rem); }
+.week-completion, .week-detail { margin-top: .75rem; }
+.week-more { margin-top: .75rem; }
+.week-more > summary { min-height: 44px; cursor: pointer; }
+.week-more[open] > summary { margin-bottom: .75rem; }
+.day-head { scroll-margin-top: calc(var(--day-toc-height, 3.5rem) + 1rem); }
+@media (min-width: 60rem) {
+  .week-grid { display: flex; flex-wrap: wrap; align-items: flex-start; }
+  .week-grid > .card { flex: 1 1 calc((100% - 2 * var(--gap)) / 3); }
+  .week-grid > .week-days, .week-grid > .week-rhythm { flex-basis: calc((100% - var(--gap)) / 2); }
+  .week-grid > .week-voices { flex-basis: calc((200% - var(--gap)) / 3); }
+  .week-voices .voices { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 39.99rem) {
+  html:has(.search-dialog[open]) { scrollbar-gutter: auto; }
+  .search-dialog { width: 100vw; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 1rem; border: 0; border-radius: 0; }
+  .search-keys { display: none; }
+}

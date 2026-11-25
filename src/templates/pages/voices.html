@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load ui %}
+{% block title %}Голоса потока — Наш день{% endblock %}
+{% block content %}
+<header class="week-head">
+    <div class="label">летопись потока</div>
+    <h1 class="h-page">Голоса потока</h1>
+    {% include "components/archive_nav.html" with current="voices" %}
+</header>
+{% if quiet %}
+{% empty_state "Ещё тихо. Первая запись откроет день." %}
+{% else %}
+<div class="week-grid">
+    {% if words %}
+    <section class="card card--lime week-story">
+        <h2 class="label">слова потока</h2>
+        <p class="source-note">повторялись у разных людей; цифра — в скольких днях</p>
+        <div class="words" style="margin-top:.625rem">
+            {% for item in words %}<span class="word" data-w="{{ item.level }}">{{ item.word }}<sup>{{ item.days }}</sup></span>{% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    {% for week in weeks %}
+    <section class="card week-voices">
+        <h2 class="label">{% if week.url %}<a class="week-link" href="{{ week.url }}">{{ week.label }} →</a>{% else %}{{ week.label }}{% endif %}</h2>
+        <div class="voices week-detail">{% for item in week.shown %}{% include "components/voice_row.html" %}{% endfor %}</div>
+        {% if week.more %}<details class="week-more"><summary class="chip">ещё {{ week.more_count }}</summary><div class="voices week-detail">{% for item in week.more %}{% include "components/voice_row.html" %}{% endfor %}</div></details>{% endif %}
+    </section>
+    {% endfor %}
+    {% if light.shown %}
+    <section class="card">
+        <h2 class="label">светлое</h2>
+        {% for item in light.shown %}<p class="week-detail">{{ item.text|typo }} · <a class="week-link" href="{{ item.url }}">{{ item.label }}</a></p>{% endfor %}
+        {% if light.more %}<details class="week-more"><summary class="chip">ещё {{ light.more_count }}</summary>{% for item in light.more %}<p class="week-detail">{{ item.text|typo }} · <a class="week-link" href="{{ item.url }}">{{ item.label }}</a></p>{% endfor %}</details>{% endif %}
+    </section>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load ui %}
+
+{% block title %}Команда сегодня — Наш день{% endblock %}
+
+{% block content %}
+<h1 class="h-page">Команда сегодня</h1>
+<p class="support-copy">{{ "У каждого свой день и свой темп. Здесь видны шаги друг друга и возможности быть рядом."|typo }}</p>
+<div class="chips" style="margin:.5rem 0 .75rem">
+    {% for item in filters %}{% chip text=item.text url=item.url kind=item.kind %}{% endfor %}
+</div>
+{% if gathering %}<p style="margin:0 0 .75rem">{{ gathering }}</p>{% endif %}
+{% if quiet %}
+{% empty_state "Ещё тихо. Первая запись откроет день." %}
+{% else %}
+<div class="two">
+    {% for row in rows %}
+    {% person name=row.name letter=row.letter status=row.status meta=row.meta photo=row.photo url=row.url wait=row.wait words=row.words scales=row.scales as_card=True slug=row.slug badge=row.birthday %}
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

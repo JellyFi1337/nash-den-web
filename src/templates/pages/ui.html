@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% load static ui %}
+
+{% block title %}Наш день — эталон интерфейса{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/ui-page.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2 class="kit-h">01 · Главная</h2>
+<main class="bento rise">
+    <section class="card card--ink b-pulse">
+        <div class="label">пульс дня</div>
+        <div class="pulse" style="margin-top:.5rem">
+            <div>
+                <div class="num num--xl pulse__num{% if pulse.morning_full %} is-full{% endif %}">{{ pulse.morning_num }}</div>
+                <div class="pulse__cap">{{ pulse.morning_cap }}</div>
+                {% bar value=pulse.morning_bar kind="lime" %}
+            </div>
+            <div>
+                <div class="num num--xl pulse__num">{{ pulse.evening_num }}</div>
+                <div class="pulse__cap">{{ pulse.evening_cap }}</div>
+                {% bar value=pulse.evening_bar %}
+            </div>
+        </div>
+        <div class="label" style="margin-top:1.25rem">команда сейчас</div>
+        <div style="margin-top:.75rem">{% faces faces %}</div>
+    </section>
+
+    <section class="card card--hot b-about">
+        <div class="label">о команде</div>
+        <div class="about-nums">
+            <div><div class="num">{{ about.people }}</div><div>человек</div></div>
+            <div><div class="num">{{ about.days }}</div><div>дней</div></div>
+            <div><div class="num">{{ about.goals }}</div><div>целей</div></div>
+        </div>
+        <p style="margin-top:.5rem;font-size:.875rem">{{ about.line }}</p>
+    </section>
+
+    <div class="pair b-pair">
+        <a class="card" href="{% url 'stats' %}">
+            <div class="label">утро в среднем</div>
+            <div class="num" style="margin-top:.375rem">{{ morning_average }}</div>
+            <div style="font-size:.8125rem;color:var(--mute)">сегодня</div>
+        </a>
+        <a class="card card--lime" href="{% url 'stats' %}">
+            <div class="label">серия</div>
+            <div class="num" style="margin-top:.375rem">{{ series }}</div>
+            <div style="font-size:.8125rem">утром подряд</div>
+        </a>
+    </div>
+
+    <section class="card b-main">
+        <div class="label">главное за день</div>
+        {% if summary %}
+        <p style="margin-top:.375rem">{{ summary }}</p>
+        {% else %}
+        {% empty_state "Ещё тихо. Первая запись откроет день." %}
+        {% endif %}
+        {% if quote %}<p class="quote" style="margin-top:.5rem">«{{ quote }}»</p>{% endif %}
+        {% if quote_meta %}<div class="label" style="margin-top:.1875rem">{{ quote_meta }}</div>{% endif %}
+    </section>
+
+    <section class="card card--lime b-ach">
+        <div class="label">достижения</div>
+        <div class="stack" style="margin-top:.5rem;font-weight:600;font-size:.9375rem">
+            {% for title in achievements %}<div>{{ title }}</div>{% empty %}{% empty_state "Пока нет достижений." %}{% endfor %}
+        </div>
+    </section>
+
+    <section class="card card--ink b-project">
+        <div class="label">{{ project_label }}</div>
+        <div class="h-card" style="margin-top:.375rem">{{ project_title|default:"Проект" }}</div>
+        {% if decisions %}
+        <div class="todo" style="margin-top:.625rem">
+            <span class="todo__box">{% if decisions.0.done %}✓{% endif %}</span>
+            <div><b>{{ decisions.0.title }}</b><div class="todo__meta">{{ decisions.0.meta }}</div></div>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="card b-full">
+        <div style="display:flex;justify-content:space-between">
+            <div class="label">команда сегодня</div>
+            <a class="label" style="color:var(--fg)" href="{% url 'team' %}">все {{ about.people }} →</a>
+        </div>
+        <div class="two" style="margin-top:.5rem">
+            {% for row in home_people %}
+            {% person name=row.name letter=row.letter status=row.status meta=row.meta photo=row.photo url=row.url wait=row.wait words=row.words scales=row.scales %}
+            {% empty %}{% empty_state "Ещё тихо. Первая запись откроет день." %}{% endfor %}
+        </div>
+    </section>
+</main>
+
+<h2 class="kit-h">02 · Команда сегодня</h2>
+<div class="h-page">Команда сегодня</div>
+<div class="chips" style="margin:.5rem 0 .75rem">
+    {% chip text="все" kind="fill" url="" %}
+    {% chip text="участники" %}
+    {% chip text="кураторы" %}
+</div>
+<div class="two">
+    {% for row in team_people %}
+    {% person name=row.name letter=row.letter status=row.status meta=row.meta photo=row.photo url=row.url wait=row.wait words=row.words scales=row.scales as_card=row.as_card %}
+    {% empty %}{% empty_state "Ещё тихо. Первая запись откроет день." %}{% endfor %}
+</div>
+
+<h2 class="kit-h">03 · Страница человека</h2>
+<div class="two">
+    <section class="card card--ink">
+        <div style="display:flex;gap:.75rem;align-items:center">
+            {% avatar letter="Л" status="done" size="lg" %}
+            <div>
+                <div class="h-page">Страница человека</div>
+                <div class="label" style="margin-top:.25rem">соберётся в следующей секции</div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.75rem">
+            <div style="border:1px solid var(--score-edge);border-radius:.875rem;padding:.5rem .625rem">
+                <div class="num" style="font-size:1.75rem">90</div>
+                <div class="label" style="color:var(--on-ink-mute)">контекст {% delta direction="same" %}</div>
+            </div>
+            <div style="border:1px solid var(--score-edge);border-radius:.875rem;padding:.5rem .625rem">
+                <div class="num" style="font-size:1.75rem;color:var(--hot)">90</div>
+                <div class="label" style="color:var(--on-ink-mute)">цели {% delta direction="up" text="50" %}</div>
+            </div>
+        </div>
+    </section>
+    <section class="card card--lime">
+        <div class="label">слова дня</div>
+        <p class="quote" style="margin-top:.25rem">«От одной только открытости люди делают первые шаги»</p>
+    </section>
+</div>
+
+<h2 class="kit-h">04 · День</h2>
+<nav class="datestrip hscroll" aria-label="Дни">
+    <a href="{% url 'days' %}">25</a>
+    <a href="{% url 'days' %}">26</a>
+    <a href="{% url 'days' %}">27</a>
+    <a href="{% url 'days' %}">28</a>
+    <a href="{% url 'days' %}" aria-current="date">29</a>
+    <a class="is-future">30</a>
+    <a class="is-future">1</a>
+</nav>
+<div class="num" style="margin-top:.75rem">{{ day_title }}</div>
+<div class="label" style="margin:.1875rem 0 .75rem">{{ day_caption }}</div>
+
+<h2 class="kit-h">05 · Проект</h2>
+<div class="two">
+    <section class="card card--ink">
+        <div class="label">{{ project_label }}</div>
+        <div class="h-page" style="margin:.375rem 0 .625rem">{{ project_title|default:"Проект" }}</div>
+        <div class="stack">
+            {% for item in decisions %}
+            <div class="todo{% if item.done %} is-done{% endif %}">
+                <span class="todo__box">{% if item.done %}✓{% endif %}</span>
+                <div><b>{{ item.title }}</b><div class="todo__meta">{{ item.meta }}</div></div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="card card--dashed">
+        <div class="label">открытые вопросы</div>
+        <div class="stack" style="margin-top:.5rem">
+            {% for question in questions %}<div>{{ question.text }}</div>{% empty %}{% empty_state "Открытых вопросов нет." %}{% endfor %}
+        </div>
+    </section>
+</div>
+
+<h2 class="kit-h">06 · Статистика</h2>
+<div class="two">
+    <section class="card">
+        <div class="label">ритм команды · люди × дни</div>
+        <div class="heat" style="--days:{{ heat.days }};margin-top:.625rem">
+            {% for row in heat.rows %}
+            <div class="heat__row"><span>{{ row.name }}</span>{% for level in row.cells %}<span class="heat__cell" data-l="{{ level }}"></span>{% endfor %}</div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="card">
+        <div class="label">утро: время выхода на связь</div>
+        <div class="cols" style="margin-top:.625rem">
+            {% for column in columns %}<i class="{{ column.kind }}" style="--v:{{ column.value }}"></i>{% endfor %}
+        </div>
+    </section>
+</div>
+
+<h2 class="kit-h">07 · Элементы</h2>
+<div class="two">
+    <section class="card stack">
+        <div class="label">кнопки: оранжевая — одна на экран</div>
+        <button class="btn btn--hot" type="button">Главное действие</button>
+        <button class="btn" type="button">Второе</button>
+        <button class="btn btn--ghost" type="button">Третье</button>
+    </section>
+    <section class="card stack">
+        <div class="label">статусы лица</div>
+        <div style="display:flex;gap:1rem;align-items:center;padding:.25rem">{% avatar letter="Г" status="done" %} итог записан</div>
+        <div style="display:flex;gap:1rem;align-items:center;padding:.25rem">{% avatar letter="К" status="morning" %} записано только утро</div>
+        <div style="display:flex;gap:1rem;align-items:center;padding:.25rem">{% avatar letter="П" status="wait" %} ждём</div>
+    </section>
+    <section class="card stack">
+        <div class="label">загрузка и пустое состояние</div>
+        <div class="skeleton" style="height:1.125rem;width:45%"></div>
+        <div class="skeleton" style="height:3rem"></div>
+        {% empty_state "Ещё тихо. Первая запись откроет день." %}
+    </section>
+    <section class="card">
+        <div class="label">ползунок · этап 2</div>
+        <div class="slider" style="margin-top:.5rem">
+            <div class="slider__head"><span class="label">цели</span><span class="slider__val">65<small>%</small></span></div>
+            <div class="slider__track"><div class="slider__fill" style="width:68%"></div><div class="slider__knob" style="left:calc(68% - 2.5rem)"></div></div>
+        </div>
+    </section>
+</div>
+
+<h2 class="kit-h">08 · Вход</h2>
+<div class="kit-dark">
+    <div class="gate">
+        <img class="brand__mark" src="{% static 'img/brand/mark.svg' %}" alt="" width="44" height="44" style="width:2.75rem;height:2.75rem">
+        <div class="gate__title"><span class="glitch" data-t="НАШ">НАШ</span><br><span class="glitch" data-t="ДЕНЬ">ДЕНЬ</span></div>
+        <p class="gate__hint">Оформление и движение входа — следующая секция.</p>
+    </div>
+</div>
+{% endblock %}

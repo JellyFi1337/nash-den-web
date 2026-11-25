@@ -1,0 +1,40 @@
+{
+  "events": [
+    {
+      "key": "sample-morning",
+      "start": "2026-10-02",
+      "time": "06:30",
+      "title": "Вымышленный утренний сбор",
+      "kind": "meeting",
+      "description": "Место в образце не задано.",
+      "status": "confirmed",
+      "source": "example"
+    },
+    {
+      "key": "sample-week",
+      "start": "2026-10-04",
+      "title": "Вымышленные итоги недели",
+      "kind": "week",
+      "status": "confirmed",
+      "source": "example"
+    },
+    {
+      "key": "sample-call",
+      "start": "2026-10-05",
+      "time": "20:30",
+      "title": "Вымышленный созвон",
+      "kind": "call",
+      "status": "preliminary",
+      "source": "example"
+    },
+    {
+      "key": "sample-span",
+      "start": "2026-10-26",
+      "end": "2026-11-01",
+      "title": "Вымышленная неделя без точной даты",
+      "kind": "notice",
+      "status": "confirmed",
+      "source": "example"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{% load ui %}
+<div class="label">путь к порогу</div>
+<p class="visually-hidden" id="fines-path-desc">{{ path.description|typo }}</p>
+<svg class="fines-path" viewBox="0 0 {{ path.width }} {{ path.height }}" role="img" aria-labelledby="fines-path-desc">
+    <line class="fines-path__threshold" x1="12" x2="308" y1="{{ path.threshold_y }}" y2="{{ path.threshold_y }}" />
+    <text class="fines-path__label" x="12" y="20">порог {{ path.threshold }} ₽</text>
+    <polyline class="fines-path__line" points="{{ path.line }}" />
+    {% for point in path.points %}<circle class="fines-path__point" cx="{{ point.x }}" cy="{{ point.y }}" r="2.5"><title>{{ point.day }} · {{ point.total }} ₽</title></circle>{% endfor %}
+    <text class="fines-path__label" x="308" y="160" text-anchor="end">{{ path.last }}</text>
+    {% if path.first != path.last %}<text class="fines-path__label" x="12" y="160">{{ path.first }}</text>{% endif %}
+    {% with point=path.points|last %}<text class="fines-path__label" x="{{ point.x }}" y="{{ point.y }}" dy="-8" text-anchor="end">{{ path.last_money }} ₽</text>{% endwith %}
+</svg>

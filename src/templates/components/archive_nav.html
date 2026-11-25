@@ -1,0 +1,5 @@
+<nav class="chips archive-nav" aria-label="Летопись потока">
+    <a class="chip week-link" href="{% url 'almanac' %}"{% if current == "almanac" %} aria-current="page"{% endif %}>альманах</a>
+    <a class="chip week-link" href="{% url 'tasks' %}"{% if current == "tasks" %} aria-current="page"{% endif %}>задания</a>
+    <a class="chip week-link" href="{% url 'voices' %}"{% if current == "voices" %} aria-current="page"{% endif %}>голоса</a>
+</nav>

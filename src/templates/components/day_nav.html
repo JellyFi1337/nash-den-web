@@ -1,0 +1,7 @@
+<nav class="day-nav" aria-label="{% if nav_scope == 'weeks' %}Соседние недели{% else %}Соседние дни{% endif %}">
+    {% if prev_url %}<a href="{{ prev_url }}" aria-label="{% if nav_scope == 'weeks' %}Предыдущая неделя{% else %}Предыдущий день{% endif %}: {{ prev_label }}">←&nbsp;{{ prev_label }}</a>{% else %}<span class="day-nav__disabled" aria-disabled="true" aria-label="{% if nav_scope == 'weeks' %}Предыдущая неделя недоступна{% else %}Предыдущий день недоступен{% endif %}: {{ prev_label }}">←&nbsp;{{ prev_label }}</span>{% endif %}
+    <span class="day-nav__dot" aria-hidden="true">·</span>
+    <a href="{% if all_url %}{{ all_url }}{% else %}{% url 'days_all' %}{% endif %}">{{ all_label|default:"все дни" }}</a>
+    <span class="day-nav__dot" aria-hidden="true">·</span>
+    {% if next_url %}<a href="{{ next_url }}" aria-label="{% if nav_scope == 'weeks' %}Следующая неделя{% else %}Следующий день{% endif %}: {{ next_label }}">{{ next_label }}&nbsp;→</a>{% else %}<span class="day-nav__disabled" aria-disabled="true" aria-label="{% if nav_scope == 'weeks' %}Следующая неделя недоступна{% else %}Следующий день недоступен{% endif %}: {{ next_label }}">{{ next_label }}&nbsp;→</span>{% endif %}
+</nav>

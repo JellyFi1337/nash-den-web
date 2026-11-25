@@ -1,0 +1,7 @@
+{% load ui %}
+<div class="schedule__row">
+    <div class="label">{{ item.when }}{% if item.time %} · {{ item.time }}{% endif %} · {{ item.kind }}</div>
+    <div style="font-weight:700">{{ item.title|typo }}</div>
+    {% if item.text %}<p>{{ item.text|typo }}</p>{% endif %}
+    {% if item.url %}<a href="{{ item.url }}">ссылка</a>{% endif %}
+</div>

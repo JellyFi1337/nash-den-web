@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% load ui l10n %}
+
+{% block title %}Наш день{% endblock %}
+
+{% block content %}
+{{ pulse_boot|json_script:"pulse-boot" }}
+<main class="bento rise">
+    <section class="card card--ink b-pulse{% if pulse.report %} pulse--report{% endif %}" data-pulse>
+        <div class="label">пульс дня</div>
+        {% if pulse.report %}<div class="pulse__cap pulse__source">{{ pulse.note }}</div>{% endif %}
+        {% if pulse.unavailable %}
+        <p class="pulse__cap" style="margin-top:.5rem">{{ pulse.note }}</p>
+        {% else %}
+        <div class="pulse" style="margin-top:.5rem">
+            <div>
+                <div class="num num--xl pulse__num{% if pulse.morning.full %} is-full{% endif %}" data-odo data-side="morning" data-count="{{ pulse.morning.count }}" data-total="{{ pulse.morning.total }}">{{ pulse.morning.text }}</div>
+                <div class="pulse__cap" data-cap="morning">{{ pulse.morning.caption }}</div>
+                <div class="bar{% if pulse.morning.lime %} bar--lime{% endif %}" data-bar="morning"><i style="--v:{{ pulse.morning.bar }}"></i></div>
+            </div>
+            <div>
+                <div class="num num--xl pulse__num{% if pulse.evening.full %} is-full{% endif %}" data-odo data-side="evening" data-count="{{ pulse.evening.count }}" data-total="{{ pulse.evening.total }}">{{ pulse.evening.text }}</div>
+                <div class="pulse__cap" data-cap="evening">{{ pulse.evening.caption }}</div>
+                <div class="bar{% if pulse.evening.lime %} bar--lime{% endif %}" data-bar="evening"><i style="--v:{{ pulse.evening.bar }}"></i></div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="label" style="margin-top:1.25rem">{% if pulse.report %}команда по отчёту{% else %}команда сейчас{% endif %}</div>
+        <div style="margin-top:.75rem">{% faces people=faces %}</div>
+        <div class="codeclock" data-countdown="rollover" role="timer">
+            <div class="label" data-countdown-label>{{ clocks.code.label }}</div>
+            <span class="codeclock__digits" data-roll aria-hidden="true">{{ clocks.code.left }}</span>
+            <div class="codeclock__track" aria-hidden="true"><i data-countdown-progress style="--p:{{ clocks.code.progress }}"></i></div>
+            <span class="visually-hidden" data-countdown-sr>{{ clocks.code.spoken }}</span>
+        </div>
+    </section>
+
+    <section class="card card--hot b-about">
+        <div class="label">о команде</div>
+        {% if about.team %}<div class="h-card" style="margin-top:.25rem">{{ about.team }}</div>{% endif %}
+        <div class="about-nums">
+            <div><div class="num" data-countup>{{ about.people }}</div><div>в&nbsp;команде</div></div>
+            <div><div class="num" data-countup>{{ about.days }}</div><div>{{ about.days_unit }}</div></div>
+            <div><div class="num" data-countup>{{ about.goals }}</div><div>целей</div></div>
+        </div>
+        <p style="margin-top:.5rem;font-size:.875rem">{{ about.line|typo }}</p>
+        <p class="support-copy support-copy--compact">{{ "Большие цели складываются из ежедневных шагов. Здесь мы замечаем свой путь и вклад друг друга."|typo }}</p>
+        {% if clocks.end %}
+        <div class="endclock" data-countdown="end" role="timer">
+            <span class="label">до конца потока</span>
+            <span class="endclock__time" aria-hidden="true"><b data-days>{{ clocks.end.days }}</b> {{ clocks.end.unit }} <span class="endclock__digits" data-roll>{{ clocks.end.left }}</span></span>
+            <span class="visually-hidden" data-countdown-sr>{{ clocks.end.spoken }}</span>
+        </div>
+        {% endif %}
+    </section>
+
+    {% if not schedule.empty %}
+    <section class="card b-full schedule" id="schedule">
+        <div class="label">расписание</div>
+        {% if schedule.quiet %}
+        <p style="margin-top:.375rem">{{ "На сегодня отдельного события нет."|typo }}</p>
+        {% else %}
+        <div class="stack" style="margin-top:.5rem">
+            {% for item in schedule.today %}
+            {% include "components/schedule_row.html" %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if schedule.upcoming %}
+        <div class="label" style="margin-top:.75rem">ближайшее</div>
+        <div class="stack" style="margin-top:.375rem">
+            {% for item in schedule.upcoming %}
+            {% include "components/schedule_row.html" %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <details style="margin-top:.75rem">
+            <summary>всё расписание</summary>
+            {% for week in schedule.weeks %}
+            <div class="label" style="margin-top:.75rem">{{ week.label|typo }}</div>
+            <div class="stack" style="margin-top:.25rem">
+                {% for item in week.items %}
+                {% include "components/schedule_row.html" %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </details>
+    </section>
+    {% endif %}
+
+    {% for board in coaching %}
+    <section class="card b-full coaching">
+        <div class="label">коуч-сессии · {{ board.coach }}</div>
+        <div class="metric" style="margin-top:.375rem"><span class="metric__value">{{ board.free }}</span><span class="metric__unit">свободно из {{ board.total }}</span></div>
+        {% if board.next_free %}<p style="margin-top:.25rem">Ближайшее свободное окно&nbsp;— {{ board.next_free }}.</p>{% else %}<p style="margin-top:.25rem">Свободных окон нет.</p>{% endif %}
+        <details class="coaching__all">
+            <summary>все окна</summary>
+            {% for day in board.days %}
+            <div class="coaching__day">
+                <div class="label">{{ day.label }} · {{ day.weekday }}</div>
+                <div class="chips" style="margin-top:.25rem">
+                    {% for slot in day.slots %}<span class="chip{% if not slot.booked %} chip--lime{% endif %}">{{ slot.time }}{% if slot.booked %} · {{ slot.who }}{% else %} · свободно{% endif %}</span>{% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </details>
+        <p class="source-note">записаться — в таблице команды, лист «КОУЧ-СЕССИИ»{% if coaching_note %} · обновлено в {{ coaching_note }}{% endif %}</p>
+    </section>
+    {% endfor %}
+
+    <div class="pair b-pair">
+        <a class="card" href="{% url 'stats' %}">
+            <div class="label">утро в среднем</div>
+            {% if average.time %}
+            <div class="num" style="margin-top:.375rem" data-countup>{{ average.time }}</div>
+            {% if average.note %}<div style="font-size:.8125rem">{{ average.note }}</div>{% endif %}
+            {% if average.compare %}<div style="font-size:.8125rem;color:var(--mute)">{{ average.compare }}</div>{% endif %}
+            {% else %}
+            <div style="margin-top:.375rem">{{ average.empty }}</div>
+            {% endif %}
+        </a>
+        <a class="card card--lime" href="{% url 'stats' %}">
+            <div class="label">{% if streak.total %}серия {{ streak.total }}/{{ streak.total }}{% else %}серия{% endif %}</div>
+            <div class="figure" style="margin-top:.375rem">
+                <div class="num" data-countup>{{ streak.days }}</div>
+                <span class="figure__unit">{{ streak.unit }}</span>
+            </div>
+            <div style="font-size:.8125rem">{{ streak.line }}</div>
+        </a>
+    </div>
+
+    {% if bank %}
+    <section class="card b-bank fines fines--compact{% if bank.over %} is-over{% elif bank.near %} is-near{% endif %}" id="bank">
+        <div class="card__head">
+            <div class="label">банк штрафов</div>
+            <span class="chip fines__rate">{% if bank.near %}{{ bank.near_label|typo }}{% else %}{{ bank.rate|typo }}{% endif %}</span>
+        </div>
+        <div class="metric" style="margin-top:.5rem"><span class="metric__value" data-countup="money" data-countup-key="bank">{{ bank.total }}</span><span class="metric__unit">{{ "₽ из "|add:bank.threshold|typo }}</span></div>
+        {% include "components/fines_gauge.html" with gauge=bank compact=True %}
+        {% if bank.forecast or bank.clean or bank.comparison %}<div class="fines__summary">
+            {% if bank.forecast %}<p>{{ bank.forecast.text|typo }}</p>{% endif %}
+            {% if bank.clean %}<p>{{ bank.clean.text|typo }}</p>{% endif %}
+            {% if bank.comparison %}<p>{{ bank.comparison.text|typo }}</p>{% endif %}
+        </div>{% endif %}
+        <div class="fines__footer"><p class="source-note">из таблицы команды · обновлено в {{ bank.note }}</p><a class="label card__more" href="{% url 'stats' %}#fines">подробнее →</a></div>
+    </section>
+    {% endif %}
+
+    <section class="card b-main">
+        {% if main.empty %}
+        {% empty_state main.empty %}
+        {% else %}
+        <div class="label">{{ main.heading }}</div>
+        {% if main.title %}<h1 class="day-title">{{ main.title|typo }}</h1>{% endif %}
+        {% if main.summary %}<p style="margin-top:.375rem">{{ main.summary|typo }}</p>{% endif %}
+        {% if main.quote %}
+        <p class="quote" style="margin-top:.5rem">«{{ main.quote|typo }}»</p>
+        {% if main.author %}<div class="label" style="margin-top:.1875rem">{{ main.author }}</div>{% endif %}
+        {% endif %}
+        {% endif %}
+    </section>
+
+    <section class="card card--lime b-ach">
+        <div class="label">достижения</div>
+        <div data-achievements>
+            {% if achievements %}
+            <p class="support-copy support-copy--compact">{{ "То, что получилось вместе."|typo }}</p>
+            <div class="stack" style="margin-top:.5rem;font-weight:600;font-size:.9375rem">
+                {% for item in achievements %}<div>{{ item.title|typo }}</div>{% endfor %}
+            </div>
+            {% else %}
+            {% empty_state "Здесь появятся наши общие достижения — шаги, которые хочется сохранить." %}
+            {% endif %}
+        </div>
+    </section>
+
+    {% if project.title %}
+    <section class="card card--ink b-project">
+        <div class="label">{{ project.label|typo }}</div>
+        <div class="h-card" style="margin-top:.375rem">{{ project.title|typo }}</div>
+        {% if project.readiness %}
+        <div class="project-readiness">
+            <svg class="project-readiness__ring" viewBox="0 0 48 48" role="img" aria-label="{{ project.readiness.label }}">
+                <circle class="project-readiness__track" cx="24" cy="24" r="20" />
+                <circle class="project-readiness__fill" cx="24" cy="24" r="20" pathLength="100" stroke-dasharray="{{ project.readiness.percent|unlocalize }} 100" />
+            </svg>
+            <span class="label">{{ project.readiness.label }}</span>
+        </div>
+        {% endif %}
+        {% if project.decision %}
+        <div class="todo" style="margin-top:.625rem"><span class="todo__box"></span><div><b>{{ project.decision.title|typo }}</b>{% if project.decision.meta %}<div class="todo__meta">{{ project.decision.meta|typo }}</div>{% endif %}</div></div>
+        {% endif %}
+        {% if project.next_step %}
+        <div class="project-next">
+            <div class="label">ближайший шаг</div>
+            <p>{{ project.next_step.text|typo }}</p>
+            {% if project.next_step.owners or project.next_step.due %}<div class="todo__meta">{{ project.next_step.owners|typo }}{% if project.next_step.owners and project.next_step.due %} · {% endif %}{{ project.next_step.due }}</div>{% endif %}
+        </div>
+        {% endif %}
+        <a class="label card__more project-link" href="{% url 'project' %}">проект →</a>
+    </section>
+    {% endif %}
+
+    <section class="card b-full b-team">
+        <div class="card__head">
+            <div><div class="label">команда сегодня</div>{% if team_note %}<div class="source-note team-report-note">{{ team_note }}</div>{% endif %}</div>
+            {% if team_total %}<a class="label" style="color:var(--fg)" href="{% url 'team' %}">все {{ team_total }} →</a>{% endif %}
+        </div>
+        {% if team %}
+        <div class="two" style="margin-top:.5rem">
+            {% for row in team %}
+            {% person name=row.name letter=row.letter status=row.status meta=row.meta photo=row.photo url=row.url wait=row.wait words=row.words scales=row.scales slug=row.slug %}
+            {% endfor %}
+        </div>
+        {% else %}
+        {% empty_state "Ещё тихо. Первая запись откроет день." %}
+        {% endif %}
+    </section>
+</main>
+<div class="celebrate" data-celebrate aria-hidden="true">
+    <div>
+        <div class="num num--xl" data-celebrate-num></div>
+        <div class="h-card">все на связи</div>
+    </div>
+</div>
+{% endblock %}

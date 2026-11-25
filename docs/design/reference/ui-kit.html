@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Наш день — эталон интерфейса</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="ui.css">
+<style>
+/* служебные стили только для этой страницы-образца */
+.kit-h { font: 700 .75rem var(--font-mono); letter-spacing: .1em; text-transform: uppercase; margin: 2.5rem 0 .75rem; padding-top: 1rem; border-top: 1.5px solid var(--ink); }
+.kit-note { color: var(--mute); font-size: .875rem; margin-bottom: .75rem; }
+.kit-dark { background: var(--ink); border-radius: var(--r-card); overflow: hidden; }
+.kit-dark .gate { min-height: 34rem; }
+.nav-float { position: sticky; margin: 1rem auto 0; width: max-content; left: auto; transform: none; }
+.two { display: grid; gap: var(--gap); }
+@media (min-width: 60rem) { .two { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<!-- Все имена и тексты на этой странице вымышленные. -->
+<div class="shell">
+
+  <!-- ШАПКА: одинаковая на всех страницах -->
+  <header class="topbar">
+    <span class="logo">лого</span>
+    <span class="topbar__brand">НАШ ДЕНЬ</span>
+    <nav class="topbar__nav" aria-label="Разделы">
+      <a href="#" aria-current="page">Сегодня</a><a href="#">Команда</a><a href="#">Дни</a><a href="#">Проект</a>
+    </nav>
+    <span class="label" style="color:var(--ink)">ВТ 29.09</span>
+    <span class="topbar__spacer"></span>
+    <span class="chip chip--fill">день 09/58</span>
+    <button class="chip" type="button" aria-label="Размер текста">А+</button>
+  </header>
+
+  <h2 class="kit-h">01 · Главная</h2>
+  <main class="bento rise">
+    <section class="card card--ink b-pulse">
+      <div class="label">пульс дня</div>
+      <div class="pulse" style="margin-top:.5rem">
+        <div>
+          <div class="num num--xl pulse__num is-full">19/19</div>
+          <div class="pulse__cap">утро · все на связи</div>
+          <div class="bar bar--lime"><i style="--v:100%"></i></div>
+        </div>
+        <div>
+          <div class="num num--xl pulse__num">18/19</div>
+          <div class="pulse__cap">вечер · ждём одного</div>
+          <div class="bar"><i style="--v:94.7%"></i></div>
+        </div>
+      </div>
+      <div class="label" style="margin-top:1.25rem">команда сейчас</div>
+      <div class="faces" id="faces" style="margin-top:.75rem"><!-- в шаблоне: цикл по участникам --></div>
+    </section>
+
+    <section class="card card--hot b-about">
+      <div class="label">о команде</div>
+      <div style="display:flex;gap:1.25rem;margin-top:.375rem">
+        <div><div class="num">19</div><div>человек</div></div>
+        <div><div class="num">58</div><div>дней</div></div>
+        <div><div class="num">57</div><div>целей</div></div>
+      </div>
+      <p style="margin-top:.5rem;font-size:.875rem">14 участников и 5 кураторов · 21.09 — 17.11</p>
+    </section>
+
+    <div class="pair b-pair">
+      <a class="card" href="#">
+        <div class="label">утро в среднем</div>
+        <div class="num" style="margin-top:.375rem">07:48</div>
+        <div style="font-size:.8125rem;color:var(--mute)">на 1 ч 20 мин раньше, чем вчера</div>
+      </a>
+      <a class="card card--lime" href="#">
+        <div class="label">серия 19/19</div>
+        <div class="num" style="margin-top:.375rem">2 дня</div>
+        <div style="font-size:.8125rem">утром подряд</div>
+      </a>
+    </div>
+
+    <section class="card b-main">
+      <div class="label">главное за день</div>
+      <p style="margin-top:.375rem">Утро — на 1 ч 20 мин раньше, чем вчера. Команда проекта вышла на парки.</p>
+      <p class="quote" style="margin-top:.5rem">«Поддержка — это круто»</p>
+      <div class="label" style="margin-top:.1875rem">Марк · 23:11</div>
+    </section>
+
+    <section class="card card--lime b-ach">
+      <div class="label">достижения</div>
+      <div class="stack" style="margin-top:.5rem;font-weight:600;font-size:.9375rem">
+        <div>Два утра подряд — 19 из 19</div><div>Тексты для СМИ готовы</div><div>Первый мастер согласился</div>
+      </div>
+    </section>
+
+    <section class="card card--ink b-project">
+      <div class="label">проект · до 23.10 — 24 дня</div>
+      <div class="h-card" style="margin-top:.375rem">Город нового времени</div>
+      <div class="todo" style="margin-top:.625rem"><span class="todo__box"></span><div><b>Переговоры с парком</b><div class="todo__meta">Вера · до 30.09</div></div></div>
+    </section>
+
+    <section class="card b-full">
+      <div style="display:flex;justify-content:space-between"><div class="label">команда сегодня</div><a class="label" style="color:var(--ink)" href="#">все 19 →</a></div>
+      <div class="two" style="margin-top:.5rem">
+        <a class="person" href="#">
+          <div class="person__head"><span class="avatar is-done">Г</span><div><div class="person__name">Глеб</div><div class="person__meta">21:07</div></div></div>
+          <div class="person__scale"><span class="label">контекст</span><div class="bar"><i style="--v:100%"></i></div><b>100</b></div>
+          <div class="person__scale"><span class="label">цели</span><div class="bar bar--goals"><i style="--v:100%"></i></div><b>100</b></div>
+        </a>
+        <a class="person" href="#">
+          <div class="person__head"><span class="avatar is-morning">К</span><div><div class="person__name">Кира</div><div class="person__meta">утро 08:57</div></div></div>
+          <div class="person__wait">Итог ещё не записан</div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <h2 class="kit-h">02 · Команда сегодня</h2>
+  <div class="h-page">Команда сегодня</div>
+  <div class="chips" style="margin:.5rem 0 .75rem"><a class="chip chip--fill" href="#">все 19</a><a class="chip" href="#">участники</a><a class="chip" href="#">кураторы</a></div>
+  <div class="two">
+    <a class="card person" href="#">
+      <div class="person__head"><span class="avatar is-done">Л</span><div style="flex:1"><div class="person__name">Лада</div><div class="person__meta">«Плавучая» · 21:06</div></div></div>
+      <div class="person__scale"><span class="label">контекст</span><div class="bar"><i style="--v:90%"></i></div><b>90</b></div>
+      <div class="person__scale"><span class="label">цели</span><div class="bar bar--goals"><i style="--v:90%"></i></div><b>90</b></div>
+      <div class="person__text">«Столько доброты в людях»</div>
+    </a>
+    <a class="card person" href="#">
+      <div class="person__head"><span class="avatar is-done">А</span><div style="flex:1"><div class="person__name">Ася</div><div class="person__meta">22:11</div></div></div>
+      <div class="person__scale"><span class="label">контекст</span><div class="bar"><i style="--v:90%"></i></div><b>90</b></div>
+      <div class="person__scale"><span class="label">цели</span><div class="bar bar--goals"><i style="--v:15%"></i></div><b>15</b></div>
+      <div class="person__text">«Я двигаюсь в своём темпе»</div>
+    </a>
+    <a class="card person" href="#">
+      <div class="person__head"><span class="avatar is-morning">К</span><div style="flex:1"><div class="person__name">Кира</div><div class="person__meta">утро 08:57</div></div></div>
+      <div class="person__wait">Итог ещё не записан</div>
+    </a>
+    <a class="card person" href="#">
+      <div class="person__head"><span class="avatar is-wait">П</span><div style="flex:1"><div class="person__name">Павел</div><div class="person__meta">куратор</div></div></div>
+      <div class="person__wait">Сегодня ещё не на связи</div>
+    </a>
+  </div>
+
+  <h2 class="kit-h">03 · Страница человека</h2>
+  <div class="two">
+    <section class="card card--ink">
+      <div style="display:flex;gap:.75rem;align-items:center"><span class="avatar avatar--lg is-done">Л</span><div><div class="h-page">Лада Демина</div><div class="label" style="margin-top:.25rem">участник · качество дня «Плавучая»</div></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.75rem">
+        <div style="border:1px solid #444;border-radius:.875rem;padding:.5rem .625rem"><div class="num" style="font-size:1.75rem">90</div><div class="label" style="color:#AAA">контекст <span class="delta delta--same"></span></div></div>
+        <div style="border:1px solid #444;border-radius:.875rem;padding:.5rem .625rem"><div class="num" style="font-size:1.75rem;color:var(--hot)">90</div><div class="label" style="color:#AAA">цели <span class="delta delta--up">50</span></div></div>
+      </div>
+    </section>
+    <section class="card">
+      <div class="label">путь · контекст и цели</div>
+      <!-- в шаблоне: точки считает сервер; чёрная линия — контекст, оранжевая — цели -->
+      <svg viewBox="0 0 250 70" style="width:100%;margin-top:.375rem" role="img" aria-label="График контекста и целей по дням">
+        <polyline fill="none" stroke="#0B0B0C" stroke-width="2.5" points="6,24.6 35.5,18.4 65,21.5 94.5,15.3 124,18.4 153.5,12.2 183,15.3 212.5,12.2 242,12.2"/>
+        <polyline fill="none" stroke="#FF4A1C" stroke-width="2.5" points="6,30.8 35.5,37 65,24.6 94.5,27.7 124,18.4 153.5,33.9 183,21.5 212.5,43.2 242,12.2"/>
+      </svg>
+    </section>
+    <section class="card">
+      <div class="label">цели к 17.11</div>
+      <div class="stack" style="margin-top:.5rem">
+        <div><span class="chip">прорывная</span> <b>Дополнительный доход +50%</b></div>
+        <div><span class="chip">творческая</span> <b>Событие на 10 участниц</b></div>
+        <div><span class="chip">незавершённая</span> <b>Закончить блок курса</b></div>
+      </div>
+    </section>
+    <section class="card card--lime">
+      <div class="label">слова дня</div>
+      <p class="quote" style="margin-top:.25rem">«От одной только открытости люди делают первые шаги»</p>
+    </section>
+  </div>
+
+  <h2 class="kit-h">04 · День</h2>
+  <nav class="datestrip" aria-label="Дни">
+    <a href="#">25</a><a href="#">26</a><a href="#">27</a><a href="#">28</a><a href="#" aria-current="date">29</a><a class="is-future">30</a><a class="is-future">1</a>
+  </nav>
+  <div class="num" style="margin-top:.75rem">29.09</div>
+  <div class="label" style="margin:.1875rem 0 .75rem">вторник · день 09/58</div>
+  <div class="two">
+    <section class="card"><div class="label">главное за день</div><p style="margin-top:.375rem">Утренний сбор — 19 из 19 и раньше, чем вчера. Отдел СМИ выпустил тексты и визуал.</p></section>
+    <section class="card card--ink">
+      <div class="label">лента суток</div>
+      <div class="timeline" style="margin-top:.5rem">
+        <div class="timeline__row"><time>01:18</time><span>первая декларация — Егор</span></div>
+        <div class="timeline__row"><time>09:58</time><span>утро: 19 из 19</span></div>
+        <div class="timeline__row"><time>20:46</time><span>первый итог — Инна</span></div>
+        <div class="timeline__row"><time>23:16</time><span>«Мы — пантеры!»</span></div>
+      </div>
+    </section>
+  </div>
+
+  <h2 class="kit-h">05 · Проект</h2>
+  <div class="two">
+    <section class="card card--ink">
+      <div class="label">до 23.10 — 24 дня</div>
+      <div class="h-page" style="margin:.375rem 0 .625rem">Город нового времени</div>
+      <div class="stack">
+        <div class="todo"><span class="todo__box"></span><div><b>Переговоры с парком</b><div class="todo__meta">Вера · до 30.09</div></div></div>
+        <div class="todo"><span class="todo__box"></span><div><b>Смета: шатры и мебель</b><div class="todo__meta">Егор · до 2.10</div></div></div>
+        <div class="todo is-done"><span class="todo__box">✓</span><div><b>Тексты и визуал для СМИ</b><div class="todo__meta">Дина, Рита</div></div></div>
+      </div>
+    </section>
+    <section class="card card--dashed">
+      <div class="label">открытые вопросы</div>
+      <div class="stack" style="margin-top:.5rem"><div>Кто обзванивает парки?</div><div>Дата 23.10 — опрос не закрыт</div><div>Мастера для восьми станций</div></div>
+    </section>
+  </div>
+
+  <h2 class="kit-h">06 · Статистика</h2>
+  <div class="two">
+    <section class="card"><div class="label">ритм команды · люди × дни</div><div class="heat" id="heat" style="--days:9;margin-top:.625rem"><!-- в шаблоне: цикл --></div></section>
+    <section class="card">
+      <div class="label">утро: время выхода на связь</div>
+      <div class="cols" style="margin-top:.625rem"><i style="--v:62%"></i><i style="--v:58%"></i><i style="--v:70%"></i><i style="--v:66%"></i><i style="--v:52%"></i><i style="--v:60%"></i><i style="--v:48%"></i><i class="is-prev" style="--v:76%"></i><i class="is-today" style="--v:46%"></i></div>
+      <div style="display:flex;justify-content:space-between;margin-top:.375rem" class="label"><span>21.09</span><span style="color:var(--ink)">28.09 · 09:08</span><span style="color:var(--hot)">29.09 · 07:48</span></div>
+    </section>
+  </div>
+
+  <h2 class="kit-h">07 · Элементы</h2>
+  <div class="two">
+    <section class="card stack">
+      <div class="label">кнопки: оранжевая — одна на экран</div>
+      <button class="btn btn--hot" type="button">Главное действие</button>
+      <button class="btn" type="button">Второе</button>
+      <button class="btn btn--ghost" type="button">Третье</button>
+    </section>
+    <section class="card stack">
+      <div class="label">статусы лица</div>
+      <div style="display:flex;gap:1rem;align-items:center;padding:.25rem"><span class="avatar is-done">Г</span> итог записан</div>
+      <div style="display:flex;gap:1rem;align-items:center;padding:.25rem"><span class="avatar is-morning">К</span> записано только утро</div>
+      <div style="display:flex;gap:1rem;align-items:center;padding:.25rem"><span class="avatar is-wait">П</span> ждём</div>
+    </section>
+    <section class="card stack">
+      <div class="label">загрузка и пустое состояние</div>
+      <div class="skeleton" style="height:1.125rem;width:45%"></div><div class="skeleton" style="height:3rem"></div>
+      <div class="empty">Ещё тихо. Первая запись откроет день.</div>
+    </section>
+    <section class="card">
+      <div class="label">ползунок · этап 2</div>
+      <div class="slider" style="margin-top:.5rem">
+        <div class="slider__head"><span class="label">цели</span><span class="slider__val">65<small>%</small></span></div>
+        <div class="slider__track"><div class="slider__fill" style="width:68%"></div><div class="slider__knob" style="left:calc(68% - 2.5rem)"></div></div>
+      </div>
+    </section>
+  </div>
+
+  <h2 class="kit-h">08 · Вход (конечное состояние; движение — в demo.html)</h2>
+  <div class="kit-dark">
+    <div class="gate">
+      <span class="logo" style="width:2.75rem;height:2.75rem">лого</span>
+      <div class="gate__title is-split"><span class="glitch" data-t="НАШ">НАШ</span><br><span class="glitch" data-t="ДЕНЬ">ДЕНЬ</span></div>
+      <div class="gate__log"><div>сбой контекста…</div><div>пересборка дня…</div><div class="is-ok">контекст восстановлен ✓</div></div>
+      <input class="code-input" placeholder="код дня" aria-label="Код дня">
+      <button class="btn btn--lime" type="button" style="margin-top:.625rem">Войти</button>
+      <p class="gate__hint">Код дня — у бота. Осталось попыток: 5</p>
+    </div>
+  </div>
+
+  <!-- ПЛАВАЮЩЕЕ МЕНЮ: только телефон, одинаковое на всех страницах -->
+  <nav class="nav-float" aria-label="Разделы">
+    <a href="#" aria-current="page" aria-label="Сегодня"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.500 1.500M17.500 17.500L19 19M5 19l1.500-1.500M17.500 6.500L19 5"/></svg></a>
+    <a href="#" aria-label="Команда"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><circle cx="17.500" cy="9" r="2.500"/><path d="M17 14.500a5 5 0 0 1 4.500 5.500"/></svg></a>
+    <a href="#" aria-label="Дни"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></a>
+    <a href="#" aria-label="Проект"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/></svg></a>
+  </nav>
+</div>
+
+<script>
+// Только для образца: заполняет повторяющиеся элементы вымышленными данными.
+const names = ['Ася','Борис','Вера','Глеб','Дина','Егор','Жанна','Захар','Инна','Кира','Лада','Марк','Нина','Олег','Павел','Рита','Семён','Тая','Ульяна'];
+document.getElementById('faces').innerHTML = names.map((n, i) => `<span class="avatar ${i === 9 ? 'is-morning' : 'is-done'}" title="${n}">${n[0]}</span>`).join('');
+document.getElementById('heat').innerHTML = names.slice(0, 14).map((n, r) => `<div class="heat__row"><span>${n}</span>${Array.from({length: 9}, (_, c) => { const v = (Math.sin(r * 2.3 + c * 1.7) + 1) / 2; return `<span class="heat__cell" data-l="${v > .72 ? 3 : v > .4 ? 2 : 1}"></span>`; }).join('')}</div>`).join('');
+</script>
+</body>
+</html>

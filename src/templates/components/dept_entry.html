@@ -1,0 +1,7 @@
+{% load ui %}<div class="dept">
+    <a class="label week-link" href="{{ entry.url }}">{{ entry.day }} →</a>
+    {% if entry.summary %}<p>{{ entry.summary|typo }}</p>{% endif %}
+    {% if entry.done %}<p class="label">сделано</p><ul class="facts dept-list">{% for text in entry.done %}<li class="facts__item">{{ text|typo }}</li>{% endfor %}</ul>{% endif %}
+    {% if entry.next %}<p class="label">дальше</p><ul class="facts dept-list">{% for text in entry.next %}<li class="facts__item">{{ text|typo }}</li>{% endfor %}</ul>{% endif %}
+    {% if entry.people %}<p class="source-note">{{ entry.people }}</p>{% endif %}
+</div>

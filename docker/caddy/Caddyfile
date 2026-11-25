@@ -1,0 +1,10 @@
+{$SITE_DOMAIN} {
+	encode gzip
+	reverse_proxy web:8000
+}
+
+# Контакт ACME задаётся переменной ACME_EMAIL. Пустую строку email Caddy не принимает,
+# поэтому блок добавляют только вместе с адресом:
+# {
+#	email {$ACME_EMAIL}
+# }

@@ -1,0 +1,11 @@
+{% load ui %}
+{% person name=row.name letter=row.letter status=row.status meta=row.meta photo=row.photo url=row.url wait=row.wait words=row.words scales=row.scales slug=row.slug %}
+{% if row.details %}
+<details>
+    <summary class="label">подробнее</summary>
+    {% for item in row.details %}
+    <p><span class="label">{{ item.label }}</span></p>
+    <p class="keep-lines">{{ item.text|typo|linebreaksbr }}</p>
+    {% endfor %}
+</details>
+{% endif %}

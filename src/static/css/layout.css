@@ -1,0 +1,66 @@
+/* ---------- 4. Каркас ---------- */
+.shell { max-width: 75rem; margin: 0 auto; padding: 1rem 1rem 6.5rem; }
+.topbar { display: flex; align-items: center; flex-wrap: wrap; gap: .625rem; margin-bottom: .875rem; }
+.topbar__nav { display: none; gap: 1.25rem; font-weight: 700; font-size: .875rem; }
+.topbar__nav a[aria-current="page"] { border-bottom: 2.5px solid var(--hot); }
+.topbar__spacer { flex: 1; }
+.logo { width: 2.125rem; height: 2.125rem; border-radius: 50%; border: var(--bw) dashed currentColor; display: grid; place-items: center; font: 700 .4375rem var(--font-mono); text-transform: uppercase; flex: none; object-fit: cover; }
+
+/* плавающее меню — только телефон */
+.nav-float { position: fixed; left: 50%; bottom: max(1rem, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 20; display: flex; gap: .375rem; padding: .5rem; border-radius: 2rem; background: var(--nav-bg); }
+.nav-float a { width: 2.75rem; height: 2.75rem; border-radius: 50%; display: grid; place-items: center; color: var(--nav-fg); }
+.nav-float a[aria-current="page"] { background: var(--lime); color: var(--ink); }
+.nav-float svg { width: 1.375rem; height: 1.375rem; }
+
+@media (min-width: 60rem) {
+  .shell { padding: 1.5rem 1.5rem 3rem; }
+  .topbar__nav { display: flex; }
+  .nav-float { display: none; }
+}
+
+.bento { display: grid; gap: var(--gap); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.bento > * { grid-column: span 2; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); gap: var(--gap); }
+.two { display: grid; gap: var(--gap); align-items: start; }
+@media (min-width: 60rem) { .two { grid-template-columns: 1fr 1fr; } }
+.stats-pair:has(> :only-child) { grid-template-columns: 1fr; }
+@media (min-width: 60rem) { .stats-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 60rem) {
+  /* dense: банк встаёт в свободные колонки рядом с расписанием. */
+  .bento { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-flow: row dense; align-items: start; }
+  .bento > .b-pulse { grid-column: span 7; grid-row: span 2; }
+  .bento > .b-about { grid-column: span 5; }
+  .bento > .b-pair { grid-column: span 5; align-items: start; }
+  .bento > .b-main { grid-column: span 5; }
+  .bento > .b-ach { grid-column: span 3; }
+  .bento > .b-project { grid-column: span 4; }
+  .bento > .b-full { grid-column: 1 / -1; }
+  /* После главного дня: расписание (7) и банк (5) рядом, коуч-сессии — строкой ниже.
+     На телефоне порядок как в разметке: банк сразу после «утра» и «серии». */
+  .bento > .schedule, .bento > .coaching, .bento > .b-bank { order: 1; }
+  .bento > .schedule { grid-column: span 7; }
+  .bento > .b-bank { grid-column: span 5; }
+  .bento > .coaching { grid-column: 1 / -1; }
+  .bento:not(:has(> .b-bank)) > .coaching { grid-column: span 5; }
+  .bento:not(:has(> .schedule)) > .coaching { grid-column: span 7; }
+  .bento:not(:has(> .b-bank)):not(:has(> .coaching)) > .schedule { grid-column: 1 / -1; }
+  .bento:not(:has(> .schedule)):not(:has(> .coaching)) > .b-bank { grid-column: 1 / -1; }
+  .bento:not(:has(> .b-ach)) > .b-main { grid-column: span 8; }
+  .bento:not(:has(> .b-project)) > .b-main { grid-column: span 8; }
+  .bento:not(:has(> .b-project)) > .b-ach { grid-column: span 4; }
+  .bento:not(:has(> .b-project)):not(:has(> .b-ach)) > .b-main { grid-column: 1 / -1; }
+  .bento > .b-team { order: 2; }
+}
+
+/* Отчёт — датированный срез: полосы спокойные, яркое «все на связи» только у чата. */
+.pulse--report .pulse__num, .pulse--report .pulse__cap { color: var(--on-ink-mute); }
+.card--ink.pulse--report .bar > i { background: var(--on-ink-mute); }
+.pulse__source { margin-top: .25rem; }
+.team-report-note { margin-top: .25rem; }
+.project-readiness { display: flex; align-items: center; gap: .75rem; margin-top: .75rem; }
+.project-readiness__ring { width: 3rem; height: 3rem; flex: none; fill: none; stroke-width: 3; }
+.project-readiness__track { stroke: var(--track-ink); }
+.project-readiness__fill { stroke: var(--lime); transform: rotate(-90deg); transform-origin: center; }
+.project-next { margin-top: .875rem; }
+.project-next p { margin-top: .25rem; }
+.project-link { display: inline-flex; align-items: center; min-height: 2.75rem; margin-top: .5rem; }

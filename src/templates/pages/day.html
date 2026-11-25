@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% load ui static %}
+
+{% block title %}{{ label }} — Наш день{% endblock %}
+
+{% block content %}
+{{ swipe|json_script:"day-swipe" }}
+<div data-swipe>
+<nav class="datestrip hscroll" aria-label="Дни">
+    {% for item in dates %}
+    {% if item.future %}
+    <a class="is-future" aria-disabled="true">{{ item.label }}</a>
+    {% else %}
+    <a href="{{ item.url }}" {% if item.current %}aria-current="date"{% endif %}>{{ item.label }}</a>
+    {% endif %}
+    {% endfor %}
+</nav>
+
+{% include "components/day_nav.html" %}
+<a class="chip week-link" href="{{ week_url }}">по неделям →</a>
+
+{% if not published %}
+<p class="chip" style="margin-bottom:.75rem">отчёт ещё не опубликован</p>
+{% endif %}
+
+    <header class="day-head" id="image">
+        <div class="num" style="margin-top:.75rem">{{ short }}</div>
+        <div class="label" style="margin:.1875rem 0 .5rem">{{ weekday }}{% if stream_label %} · {{ stream_label }}{% endif %}</div>
+        {% if weather or tempo %}
+        <div class="chips">
+            {% if weather %}{% chip text=weather %}{% endif %}
+            {% if tempo %}{% chip text=tempo %}{% endif %}
+        </div>
+        {% endif %}
+        {% if title %}<h1 class="day-title">{{ title|typo }}</h1>{% endif %}
+        {% if lead %}<p class="day-lead">{{ lead|typo }}</p>{% endif %}
+    </header>
+
+    {% if toc %}
+    <div class="toc-sentinel" aria-hidden="true"></div>
+    <nav class="toc hscroll" aria-label="Блоки дня" data-toc>
+        {% for item in toc %}<a class="chip" href="{{ item.url }}"{% if forloop.first %} aria-current="true"{% endif %}>{{ item.text }}</a>{% endfor %}
+    </nav>
+    {% endif %}
+
+<div class="day-grid">
+
+    {% if summary or bullets %}
+    <section class="card {% if quote.text %}w-7{% else %}w-12{% endif %}" id="main">
+        <div class="label">Главное за день</div>
+        {% if summary %}<p style="margin-top:.375rem">{{ summary|typo }}</p>{% endif %}
+        {% if bullets %}
+        <ul class="facts" style="margin-top:.75rem">
+            {% for item in bullets %}<li class="facts__item">{{ item|typo }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    {% if quote.text %}
+    <section class="card card--hot w-5" id="quote">
+        <div class="label">цитата дня</div>
+        <p class="quote" style="font-size:1.625rem;margin:.5rem 0">{{ quote.text|typo }}</p>
+        {% if quote.author or quote.about %}
+        <div class="label">{{ quote.author }}{% if quote.about %} · {{ quote.about }}{% endif %}</div>
+        {% endif %}
+        <button class="chip sharecard-trigger" type="button" data-sharecard data-sharecard-mark="{% static 'img/brand/mark.svg' %}" aria-haspopup="dialog" aria-controls="sharecard-dialog">Карточка цитаты</button>
+    </section>
+    {% endif %}
+
+    {% if numbers %}
+    <section class="card w-12" id="numbers">
+        <div class="numbers">
+            {% for item in numbers %}
+            <div>
+                <div class="num">{{ item.value }}</div>
+                <div class="label">{{ item.label|typo }}{% if item.note %} · {{ item.note|typo }}{% endif %}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if timeline %}
+    <section class="card card--ink w-7" id="timeline">
+        <div class="label">Лента суток</div>
+        <div class="timeline" style="margin-top:.5rem">
+            {% for item in timeline %}
+            <div class="timeline__row" {% if item.kind %}data-kind="{{ item.kind }}"{% endif %}>
+                <time>{{ item.time }}</time>
+                <div>
+                    <b>{{ item.title|typo }}</b>
+                    {% if item.kind_label %}<span class="timeline__kind">{{ item.kind_label }}</span>{% endif %}
+                    {% if item.text %}<div>{{ item.text|typo }}</div>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if task.title or task.essence %}
+    <section class="card w-5" id="task">
+        <div class="label">Задание дня</div>
+        {% if task.title %}<div class="h-card" style="margin-top:.375rem">{{ task.title|typo }}</div>{% endif %}
+        {% if task.essence %}<p>{{ task.essence|typo }}</p>{% endif %}
+        {% if task.done %}<p class="label">сдали {{ task.done }}</p>{% endif %}
+        {% if task.insight %}<p>{{ task.insight|typo }}</p>{% endif %}
+        <a class="label week-link" href="{% url 'tasks' %}">все задания потока →</a>
+    </section>
+    {% endif %}
+
+    {% if voices.insights or voices.quotes or voices.talk.title or voices.talk.text %}
+    <section class="card w-7" id="voices">
+        <div class="label">Голоса дня</div>
+        <div class="voices" style="margin-top:.75rem">
+            {% for item in voices.shown %}
+            <div class="voice">
+                <div class="voice__text">{{ item.text|typo }}</div>
+                {% if item.who %}<div class="voice__who">{{ item.who }}</div>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% if voices.more %}
+        <details class="more">
+            <summary class="chip">ещё {{ voices.more_count }}</summary>
+            <div class="voices" style="margin-top:.875rem">
+                {% for item in voices.more %}
+                <div class="voice">
+                    <div class="voice__text">{{ item.text|typo }}</div>
+                    {% if item.who %}<div class="voice__who">{{ item.who }}</div>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </details>
+        {% endif %}
+        {% if voices.talk.title or voices.talk.text %}
+        <p class="label" style="margin-top:1.25rem">разговор дня</p>
+        {% if voices.talk.title %}<div class="h-card" style="margin:.25rem 0">{{ voices.talk.title|typo }}</div>{% endif %}
+        {% if voices.talk.text %}<p>{{ voices.talk.text|typo }}</p>{% endif %}
+        {% endif %}
+    </section>
+    {% endif %}
+
+    {% if words or voices.light %}
+    <section class="card card--lime w-5" id="words">
+        {% if words %}
+        <div class="label">слова дня</div>
+        <div class="words" style="margin-top:.625rem">
+            {% for item in words %}<span class="word" data-w="{{ item.level }}">{{ item.word }}<sup>{{ item.count }}</sup></span>{% endfor %}
+        </div>
+        {% endif %}
+        {% if voices.light %}
+        <p class="label" style="margin-top:1.25rem">светлое</p>
+        {% for item in voices.light %}
+        <p style="margin-top:.25rem">{{ item.text|typo }}{% if item.who %} · {{ item.who }}{% endif %}</p>
+        {% endfor %}
+        {% endif %}
+    </section>
+    {% endif %}
+
+    {% if links %}
+    <section class="card card--blue w-6" id="links">
+        <div class="label">Кто кого держал</div>
+        <div class="links" style="margin-top:.75rem">
+            {% for item in links %}
+            <div class="link-row">
+                <span>{{ item.left }}</span>
+                <span class="link-row__arrow">→</span>
+                <span>{{ item.right }}</span>
+                {% if item.kind %}<span class="link-row__kind">{{ item.kind }}</span>{% endif %}
+                {% if item.text %}<span class="link-row__text">{{ item.text|typo }}</span>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if attention %}
+    <section class="card card--ink w-6" id="attention">
+        <div class="label">На что смотрим</div>
+        <ul class="attention" style="margin-top:.5rem">
+            {% for item in attention %}<li>{{ item|typo }}</li>{% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if project %}
+    <section class="card w-12" id="project">
+        <div class="label">Проект за день</div>
+        {% if project.pulse %}<p style="margin-top:.375rem">{{ project.pulse|typo }}</p>{% endif %}
+        {% for item in project.progress %}<p>{{ item|typo }}</p>{% endfor %}
+        {% for item in project.departments %}
+        <div class="dept">
+            {% if item.name %}<b>{{ item.name|typo }}</b>{% endif %}
+            {% if item.summary %}<p>{{ item.summary|typo }}</p>{% endif %}
+            {% if item.people %}<p class="label">{{ item.people }}</p>{% endif %}
+        </div>
+        {% endfor %}
+        {% if project.next_step.text %}
+        <p style="margin-top:.75rem"><b>{{ project.next_step.text|typo }}</b>{% if project.next_step.owners %} · {{ project.next_step.owners }}{% endif %}</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    <section class="w-12" id="people">
+        {% if no_data %}
+        {% empty_state no_data %}
+        {% else %}
+        {% if gathering %}<p style="margin-bottom:.75rem">{{ gathering }}</p>{% endif %}
+        {% if not groups.done.shown and not groups.morning.shown and not groups.wait.shown %}
+        {% empty_state "Ещё тихо. Первая запись откроет день." %}
+        {% endif %}
+        {% include "components/day_group.html" with title="Итог записан" rows=groups.done %}
+        {% include "components/day_group.html" with title="Только утро" rows=groups.morning %}
+        {% include "components/day_group.html" with title=wait_title rows=groups.wait %}
+        {% endif %}
+    </section>
+    {% if chat %}{% include "components/chat_copy.html" with anchor="chat" text=chat %}{% endif %}
+</div>
+{% include "components/day_nav.html" %}
+</div>
+{% if sharecard %}
+{{ sharecard|json_script:"sharecard-data" }}
+{% include "components/sharecard_dialog.html" %}
+{% endif %}
+{% endblock %}

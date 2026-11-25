@@ -1,0 +1,25 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+src/staticfiles/
+media/
+*.log
+*.sqlite3
+.idea/
+.DS_Store
+Thumbs.db
+
+# настоящие имена людей и идентификаторы чатов
+chats.toml
+
+# настоящие данные команды: состав и отчёты (см. docs/INITIAL_DATA.md)
+private/

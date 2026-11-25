@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% load ui %}
+
+{% block title %}{{ name }} — Наш день{% endblock %}
+
+{% block content %}
+<div class="two">
+    <section class="card card--ink">
+        <div style="display:flex;gap:.75rem;align-items:center" data-member-header="{{ slug }}">
+            {% avatar letter=letter status=status size="lg" photo=photo face=slug %}
+            <div style="min-width:0">
+                <div class="h-page" style="overflow-wrap:anywhere" data-member-name>{{ name }}</div>
+                <div class="label" style="margin-top:.25rem">{{ role }}{% if callsign %} · качество дня{% endif %}</div>
+                {% if callsign %}<div class="quality">«<span data-type>{{ callsign }}</span>»</div>{% endif %}
+            </div>
+        </div>
+        {% if scores %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.75rem">
+            {% for item in scores %}
+            <div style="border:1px solid var(--score-edge);border-radius:.875rem;padding:.5rem .625rem">
+                <div class="num" style="font-size:1.75rem{% if item.hot %};color:var(--hot){% endif %}" data-countup>{{ item.value }}</div>
+                <div class="label" style="color:var(--on-ink-mute)">{{ item.label }}</div>
+                {% if item.delta %}<span class="score__delta" style="color:var(--on-ink-mute)">{% delta direction=item.delta.direction text=item.delta.text %}</span>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if profile.profession or profile.buddy or profile.birthday %}
+        <div class="stack" style="margin-top:.75rem">
+            {% if profile.profession %}<div><div class="label">профессия</div>{{ profile.profession }}</div>{% endif %}
+            {% if profile.buddy %}<div><div class="label">бади</div>{{ profile.buddy }}</div>{% endif %}
+            {% if profile.birthday %}<div><div class="label">день рождения</div>{{ profile.birthday }}</div>{% endif %}
+        </div>
+        <p class="source-note">из таблицы команды · обновлено в {{ sheet_note }}</p>
+        {% endif %}
+    </section>
+
+    {% if chart %}
+    <section class="card chart-panel">
+        <div class="label">путь · контекст и цели</div>
+        <p class="support-copy">{{ "Каждый день добавляет что-то к твоему пути. Здесь можно увидеть, как он складывается."|typo }}</p>
+        <p class="visually-hidden" id="scale-chart">{{ chart.description }}</p>
+        <svg class="chart" viewBox="0 0 {{ chart.width }} {{ chart.height }}" role="img" aria-labelledby="scale-chart">
+            {% for line in chart.team_context_lines %}<polyline class="chart__context chart__average" points="{{ line }}"></polyline>{% endfor %}
+            {% for line in chart.team_goal_lines %}<polyline class="chart__goals chart__average" points="{{ line }}"></polyline>{% endfor %}
+            {% for dot in chart.team_context_dots %}<circle class="chart__mean-context" cx="{{ dot.x }}" cy="{{ dot.y }}" r="2.5"></circle>{% endfor %}
+            {% for dot in chart.team_goal_dots %}<circle class="chart__mean-goals" cx="{{ dot.x }}" cy="{{ dot.y }}" r="2.5"></circle>{% endfor %}
+            {% for line in chart.context_lines %}<polyline class="chart__context" points="{{ line }}"></polyline>{% endfor %}
+            {% for line in chart.goal_lines %}<polyline class="chart__goals" points="{{ line }}"></polyline>{% endfor %}
+            {% for point in chart.points %}
+            <g class="chart__point" data-point="{{ forloop.counter }}" data-tip="{{ point.tip }}">
+                <rect class="chart__hit" x="{{ point.x }}" y="8" width="8" height="64"></rect>
+                {% if point.context_y %}<circle class="chart__dot-context" cx="{{ point.x }}" cy="{{ point.context_y }}" r="2.5"></circle>{% endif %}
+                {% if point.goals_y %}<circle class="chart__dot-goals" cx="{{ point.x }}" cy="{{ point.goals_y }}" r="2.5"></circle>{% endif %}
+            </g>
+            {% endfor %}
+            {% for mark in chart.marks %}<text class="chart__label" x="{{ mark.x }}" y="{{ mark.y }}" text-anchor="{{ mark.anchor }}">{{ mark.text }}</text>{% endfor %}
+        </svg>
+        <div class="data-legend" aria-label="Легенда графика">
+            <span><i class="chart__key chart__key--context" aria-hidden="true"></i>контекст</span>
+            <span><i class="chart__key chart__key--goals" aria-hidden="true"></i>цели</span>
+            {% if chart.has_team %}<span><i class="chart__key chart__key--average" aria-hidden="true"></i>пунктир — в среднем по команде</span>{% endif %}
+        </div>
+        <div class="chart__dates" aria-label="Точки графика · выбрать дату">
+            {% for point in chart.points %}<button type="button" class="chart__date" data-point="{{ forloop.counter }}" data-tip="{{ point.tip }}" aria-label="{{ point.tip }}">{{ point.day }}</button>{% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if goals %}
+    <section class="card">
+        <div class="label">{{ goals.label }}</div>
+        <div class="stack" style="margin-top:.5rem">
+            {% for item in goals.items %}
+            <div class="goal">
+                <div>{% chip text=item.kind %} <span class="goal__title">{{ item.title|typo }}</span></div>
+                {% if item.result %}<div>{{ item.result|typo }}</div>{% endif %}
+                {% if item.meanings or item.values %}
+                <details>
+                    <summary class="label" style="cursor:pointer;color:var(--fg)">смыслы и ценности</summary>
+                    <dl>
+                        {% if item.meanings %}<dt class="label">зачем</dt><dd>{{ item.meanings|typo }}</dd>{% endif %}
+                        {% if item.values %}<dt class="label">ценности</dt><dd>{{ item.values|typo }}</dd>{% endif %}
+                    </dl>
+                </details>
+                {% endif %}
+                {% for step in item.steps %}
+                <p class="label">{{ step.day }}</p>
+                <p>{{ step.text|typo }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        {% if goals.from_sheet %}
+        <p class="source-note">из таблицы команды · обновлено в {{ sheet_note }}</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    {% if words %}
+    <section class="card card--lime">
+        <div class="label">слова дня</div>
+        <p class="quote" style="margin-top:.25rem">«{{ words|typo }}»</p>
+    </section>
+    {% endif %}
+
+    {% if path.shown %}
+    <section class="card" id="path">
+        <div class="label">качество и слова дня · по дням</div>
+        <div class="quality-path">{% for item in path.shown %}{% include "components/quality_row.html" %}{% endfor %}</div>
+        {% if path.more %}<details class="more"><summary class="chip">ещё {{ path.more_count }}</summary><div class="quality-path">{% for item in path.more %}{% include "components/quality_row.html" %}{% endfor %}</div></details>{% endif %}
+    </section>
+    {% endif %}
+
+{% if week.plans or week.results %}
+<section class="card card--ink">
+    <div class="label">{{ week.label }}</div>
+    <div class="week" style="margin-top:.625rem">
+        {% if week.plans %}
+        <div class="week__col">
+            <div class="label">план</div>
+            {% for item in week.plans %}<p><b>{{ item.kind }}.</b> {{ item.text|typo }}</p>{% endfor %}
+        </div>
+        {% endif %}
+        {% if week.results %}
+        <div class="week__col">
+            <div class="label">итоги</div>
+            {% for item in week.results %}<p><b>{{ item.kind }}.</b> {{ item.text|typo }}</p>{% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <p class="source-note">из таблицы команды · обновлено в {{ sheet_note }}</p>
+</section>
+{% endif %}
+
+{% if contribution %}
+<section class="card card--dashed">
+    <div class="label">вклад в команду</div>
+    <div class="stack" style="margin-top:.5rem">
+        {% if contribution.gift %}<div><div class="label">дар</div>{{ contribution.gift|typo }}</div>{% endif %}
+        {% if contribution.useful %}<div><div class="label">сфера пользы</div>{{ contribution.useful|typo }}</div>{% endif %}
+        {% if contribution.breakthrough %}<div><div class="label">сфера прорыва</div>{{ contribution.breakthrough|typo }}</div>{% endif %}
+        {% if contribution.play %}<div><div class="label">процент игры</div>{{ contribution.play|typo }}</div>{% endif %}
+    </div>
+    <p class="source-note">из таблицы команды · обновлено в {{ sheet_note }}</p>
+</section>
+{% endif %}
+
+{% if engagement %}
+<section class="card" id="engagement">
+    <div class="label">вовлечение</div>
+    {% if engagement.line %}
+    <div class="metric" style="margin-top:.375rem"><span class="metric__value" data-countup>{{ engagement.line }}</span>{% if engagement.goal %}<span class="metric__unit">человек</span>{% endif %}</div>
+    {% if engagement.goal %}<div class="bar bar--lime" style="margin-top:.5rem" role="img" aria-label="Вовлечено {{ engagement.line }}"><i style="--v:{{ engagement.percent }}%"></i></div>{% endif %}
+    {% endif %}
+    {% if engagement.curator %}<div style="margin-top:.75rem"><div class="label">{{ engagement.curator_label }}</div>{{ engagement.curator }}</div>{% endif %}
+    {% if engagement.comment %}<p style="margin-top:.5rem">{{ engagement.comment|typo }}</p>{% endif %}
+    <p class="source-note">из таблицы команды · обновлено в {{ sheet_note }}</p>
+</section>
+{% endif %}
+
+{% if coaching %}
+<section class="card card--ink" id="coaching">
+    <div class="label">коуч-сессия</div>
+    <div class="stack" style="margin-top:.5rem">
+        {% for item in coaching %}
+        <div><b>{{ item.when }}</b>{% if item.coach %} · {{ item.coach }}{% endif %}{% if item.past %} <span class="label">прошла</span>{% endif %}</div>
+        {% endfor %}
+    </div>
+    <p class="source-note">из таблицы команды · обновлено в {{ sheet_note }}</p>
+</section>
+{% endif %}
+
+{% if anketa %}
+<section class="card">
+    <div class="label">анкета</div>
+    <div class="stack" style="margin-top:.5rem">
+        {% if anketa.request %}<div><div class="label">запрос на программу</div>{{ anketa.request|typo }}</div>{% endif %}
+        {% if anketa.need %}<div><div class="label">в чём нужна поддержка</div>{{ anketa.need|typo }}</div>{% endif %}
+        {% if anketa.offer %}<div><div class="label">чем готов поддержать</div>{{ anketa.offer|typo }}</div>{% endif %}
+        {% if anketa.wish %}<div><div class="label">пожелание команде</div>{{ anketa.wish|typo }}</div>{% endif %}
+        {% if anketa.links %}
+        <div>
+            <div class="label">соцсети</div>
+            {% for link in anketa.links %}<a class="profile-link" href="{{ link.href }}" target="_blank" rel="noopener">{{ link.text }}</a>{% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <p class="source-note">из таблицы команды · обновлено в {{ sheet_note }}</p>
+</section>
+{% endif %}
+
+{% if insights %}
+<section class="card">
+    <div class="label">инсайты</div>
+    <div class="voices" style="margin-top:.75rem">
+        {% for item in insights %}
+        <div class="voice">
+            <div class="voice__text">{{ item.text|typo }}</div>
+            {% if item.who %}<div class="voice__who">{{ item.who }}</div>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% if links %}
+<section class="card card--blue">
+    <div class="label">связи</div>
+    <div class="links" style="margin-top:.75rem">
+        {% for item in links %}
+        <div class="link-row">
+            <span>{{ item.left }}</span>
+            <span class="link-row__arrow">→</span>
+            <span>{{ item.right }}</span>
+            {% if item.kind %}<span class="link-row__kind">{{ item.kind }}</span>{% endif %}
+            {% if item.text %}<span class="link-row__text">{{ item.text|typo }}</span>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+</div>
+
+{% if history %}
+<section style="margin-top:var(--gap)">
+    <div class="label">история</div>
+    <div class="stack history" style="margin-top:.5rem">
+        {% for day in history %}
+        <section class="card">
+            <a class="label" style="color:var(--fg)" href="{{ day.url }}">{{ day.label }}</a>
+            {% if day.morning %}
+            <details>
+                <summary class="label">утро</summary>
+                {% for item in day.morning %}
+                <p><span class="label">{{ item.label }}</span></p>
+                <p class="keep-lines">{{ item.text|typo|linebreaksbr }}</p>
+                {% endfor %}
+            </details>
+            {% endif %}
+            {% if day.evening %}
+            <details>
+                <summary class="label">итог</summary>
+                {% for item in day.evening %}
+                <p><span class="label">{{ item.label }}</span></p>
+                <p class="keep-lines">{{ item.text|typo|linebreaksbr }}</p>
+                {% endfor %}
+            </details>
+            {% endif %}
+        </section>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}

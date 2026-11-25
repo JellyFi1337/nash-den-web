@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru" {% block html_attrs %}{% endblock %}>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>{% block title %}{{ shell.brand }}{% endblock %}</title>
+    <meta name="theme-color" content="#F4F2EC">
+    <link rel="icon" href="{% static 'img/brand/favicon.ico' %}" sizes="any">
+    <link rel="icon" href="{% static 'img/brand/favicon.svg' %}" type="image/svg+xml">
+    <link rel="icon" href="{% static 'img/brand/favicon-32x32.png' %}" type="image/png" sizes="32x32">
+    <link rel="icon" href="{% static 'img/brand/favicon-16x16.png' %}" type="image/png" sizes="16x16">
+    <link rel="apple-touch-icon" href="{% static 'img/brand/apple-touch-icon.png' %}">
+    <link rel="manifest" href="{% static 'img/brand/site.webmanifest' %}">
+    <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gate.css' %}">
+    <link rel="stylesheet" href="{% static 'css/motion.css' %}">
+    <link rel="stylesheet" href="{% static 'css/day.css' %}">
+    <link rel="stylesheet" href="{% static 'css/search.css' %}">
+    <script src="{% static 'js/early.js' %}"></script>
+    <script type="module" src="{% static 'js/modules/member-transition.js' %}" blocking="render"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% block body %}
+    {% if shell.motion %}{{ shell.motion|json_script:"motion-boot" }}{% endif %}
+    <div class="shell">
+        {% block chrome %}{% include "components/topbar.html" %}{% endblock %}
+        {% block content %}{% endblock %}
+        {% block nav %}{% include "components/nav_float.html" %}{% endblock %}
+    </div>
+    <div class="toast" role="status" aria-atomic="true"></div>
+    {% include "components/search_dialog.html" %}
+    <template data-empty-art>{% include "components/empty_art.html" %}</template>
+    {% endblock %}
+    {% block scripts %}
+    <script type="module" src="{% static 'js/app.js' %}"></script>
+    {% endblock %}
+</body>
+</html>

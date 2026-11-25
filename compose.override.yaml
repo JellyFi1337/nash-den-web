@@ -1,0 +1,31 @@
+services:
+  db:
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  web:
+    build:
+      target: dev
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./src:/app/src
+      - ./pyproject.toml:/app/pyproject.toml
+      - ./docs/examples:/app/docs/examples:ro
+      - ./scripts:/app/scripts:ro
+      - ./compose.prod.yaml:/app/compose.prod.yaml:ro
+      - ./compose.http.yaml:/app/compose.http.yaml:ro
+      - ./docker/caddy:/app/docker/caddy:ro
+    command:
+      - python
+      - /app/src/manage.py
+      - runserver
+      - 0.0.0.0:8000
+
+  bot:
+    profiles:
+      - bot
+    volumes:
+      - ./src:/app/src
+      - ./pyproject.toml:/app/pyproject.toml
+      - ./docs/examples:/app/docs/examples:ro

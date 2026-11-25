@@ -1,0 +1,24 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>Загрузить отчёт</h1>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <p><label for="id_text">Текст отчёта</label></p>
+  <p><textarea name="text" id="id_text" rows="12" cols="80">{{ text }}</textarea></p>
+  <p><label for="id_files">Файлы .json, .txt или .zip</label></p>
+  <p><input type="file" name="files" id="id_files" multiple></p>
+  <p><button type="submit" name="action" value="check">Проверить</button></p>
+</form>
+{% if lines %}
+  <h2>Сводка</h2>
+  <pre>{{ lines }}</pre>
+  {% if ready %}
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" name="action" value="publish">Опубликовать</button>
+      <button type="submit" name="action" value="draft">Сохранить как черновик</button>
+    </form>
+  {% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load ui %}
+
+{% block title %}Статистика — Наш день{% endblock %}
+
+{% block content %}
+<h1 class="h-page">Статистика</h1>
+<p class="support-copy">{{ "Наш ритм и шаги вперёд — день за днём."|typo }}</p>
+{% if week_link %}
+<section class="card week-summary">
+    <div><div class="label">по неделям</div><p>{{ week_link.label|typo }}</p></div>
+    <a class="chip week-link" href="{{ week_link.url }}">Открыть неделю →</a>
+</section>
+{% endif %}
+<section class="card week-summary">
+    <div><div class="label">летопись потока</div><p>{{ "Альманах недель, задания дней и голоса команды."|typo }}</p></div>
+    {% include "components/archive_nav.html" %}
+</section>
+<div class="two stats-metrics" style="margin-top:.75rem">
+    <section class="card">
+        <div class="label">серия {{ streak.total }}/{{ streak.total }}</div>
+        <div class="figure" style="margin-top:.375rem">
+            <div class="num" data-countup>{{ streak.days }}</div>
+            <span class="figure__unit">{{ streak.unit }}</span>
+        </div>
+        <div style="font-size:.8125rem">{{ streak.line }}</div>
+    </section>
+    <section class="card">
+        <div class="label">утро в среднем</div>
+        {% if morning.time %}
+        <div class="num" style="margin-top:.375rem" data-countup>{{ morning.time }}</div>
+        {% if morning.note %}<div style="font-size:.8125rem">{{ morning.note }}</div>{% endif %}
+        {% if morning.compare %}<div style="font-size:.8125rem;color:var(--mute)">{{ morning.compare }}</div>{% endif %}
+        {% else %}
+        <div style="margin-top:.375rem">{{ morning.empty }}</div>
+        {% endif %}
+    </section>
+    <section class="card">
+        <div class="label">итог в среднем</div>
+        {% if evening.time %}
+        <div class="num" style="margin-top:.375rem" data-countup>{{ evening.time }}</div>
+        {% if evening.note %}<div style="font-size:.8125rem">{{ evening.note }}</div>{% endif %}
+        {% if evening.compare %}<div style="font-size:.8125rem;color:var(--mute)">{{ evening.compare }}</div>{% endif %}
+        {% else %}
+        <div style="margin-top:.375rem">{{ evening.empty }}</div>
+        {% endif %}
+    </section>
+    {% if stream.label %}
+    <section class="card">
+        <div class="label">{{ stream.label }}</div>
+        <div class="figure" style="margin-top:.375rem">
+            <div class="num" data-countup>{{ stream.ratio }}</div>
+            <span class="figure__unit">{{ stream.unit }}</span>
+        </div>
+        <div style="font-size:.8125rem">{{ stream.left }}</div>
+    </section>
+    {% endif %}
+</div>
+
+{% if heat.rows %}
+<section class="card" style="margin-top:var(--gap)">
+    <div class="label">ритм команды · люди × дни</div>
+    {% if heat.note %}<p class="source-note">{{ heat.note }}</p>{% endif %}
+    <p class="visually-hidden" id="heat-desc">{{ heat.description }}</p>
+    <div class="heat" style="--days:{{ heat.days }};margin-top:.625rem" role="img" aria-labelledby="heat-desc">
+        <div class="heat__row heat__dates" aria-hidden="true"><span></span>{% for day in heat.dates %}<span>{{ day }}</span>{% endfor %}</div>
+        {% for row in heat.rows %}
+        <div class="heat__row"><span>{{ row.name }}</span>{% for mark in row.marks %}<span class="heat__cell" data-l="{{ mark.level }}" data-tip="{{ mark.tip }}"></span>{% endfor %}</div>
+        {% endfor %}
+    </div>
+    <div class="data-legend" aria-label="Легенда ритма">
+        <span><i class="heat__key" data-l="x" aria-hidden="true"></i>отчёта нет</span>
+        <span><i class="heat__key" data-l="0" aria-hidden="true"></i>итога нет</span>
+        <span><i class="heat__key" data-l="1" aria-hidden="true"></i>итог без процента / цели ниже 50%</span>
+        <span><i class="heat__key" data-l="2" aria-hidden="true"></i>50–89%</span>
+        <span><i class="heat__key" data-l="3" aria-hidden="true"></i>90% и выше</span>
+    </div>
+</section>
+{% endif %}
+
+{% if mornings.columns or fines.gauge %}
+<div class="stack" style="margin-top:var(--gap)">
+{% if mornings.columns %}
+<section class="card">
+    <div class="label">утро: время выхода на связь</div>
+    <p class="visually-hidden" id="morning-desc">{{ mornings.description }}</p>
+    <div class="cols" style="margin-top:.625rem" role="img" aria-labelledby="morning-desc">
+        {% for column in mornings.columns %}<i class="{{ column.kind }}" style="--v:{{ column.value }}"></i>{% endfor %}
+    </div>
+    <div class="cols__days" aria-hidden="true">{% for column in mornings.columns %}<span>{{ column.day }}</span>{% endfor %}</div>
+    {% if mornings.labels.prev or mornings.labels.today %}
+    <div style="display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.25rem 1rem;margin-top:.375rem" class="label">
+        {% if mornings.labels.prev %}<span style="color:var(--fg)">{{ mornings.labels.prev }}</span>{% endif %}
+        {% if mornings.labels.today %}<span style="color:var(--hot)">{{ mornings.labels.today }}</span>{% endif %}
+    </div>
+    {% endif %}
+</section>
+{% endif %}
+
+{% if fines.gauge %}
+<section class="card fines{% if fines.gauge.over %} is-over{% elif fines.gauge.near %} is-near{% endif %}" id="fines">
+    <div class="card__head">
+        <div class="label">банк штрафов · по дням</div>
+        <span class="chip fines__rate">{% if fines.gauge.near %}{{ fines.gauge.near_label|typo }}{% else %}{{ fines.gauge.rate|typo }}{% endif %}</span>
+    </div>
+    {% if fines.gauge %}
+    <div class="metric" style="margin-top:.5rem"><span class="metric__value" data-countup="money" data-countup-key="bank">{{ fines.gauge.total }}</span><span class="metric__unit">{{ "₽ из "|add:fines.gauge.threshold|typo }}</span></div>
+    {% include "components/fines_gauge.html" with gauge=fines.gauge %}
+    {% endif %}
+    {% if fines.forecast or fines.clean or fines.comparison %}<div class="fines__summary">
+        {% if fines.forecast %}<p>{{ fines.forecast.text|typo }}</p>{% endif %}
+        {% if fines.clean %}<p>{{ fines.clean.text|typo }}</p>{% endif %}
+        {% if fines.comparison %}<p>{{ fines.comparison.text|typo }}{% if fines.comparison.difference != None %} · разница {{ fines.comparison.difference }}&nbsp;₽{% endif %}</p>{% endif %}
+    </div>{% endif %}
+    {% if fines.forecast %}<p class="source-note">Прогноз — по {{ fines.forecast.samples }} датам снимка за последние 7 дней; пропущенные даты не считаются нулём.</p>{% endif %}
+    {% if fines.path or fines.kinds.segments %}<div class="two fines__details">
+        {% if fines.path %}
+        <div>
+            {% include "components/fines_path.html" with path=fines.path %}
+            {% if fines.different_total %}<p class="source-note">График — сумма дней снимка; сумма строки «Банк» показана отдельно выше.</p>{% endif %}
+        </div>
+        {% endif %}
+        {% if fines.kinds.segments %}
+        <div>
+            <div class="label">по видам · за всё время</div>
+            {% include "components/fines_kinds.html" with kinds=fines.kinds label="По видам за всё время" %}
+        </div>
+        {% endif %}
+    </div>{% endif %}
+    {% if fines.weeks %}
+    <details class="more fines__weeks">
+        <summary>по неделям <span class="more__mark" aria-hidden="true">+</span></summary>
+        <div class="two">
+        {% for week in fines.weeks %}
+            <div><div class="label">{{ week.label|typo }}</div>{% include "components/fines_kinds.html" with kinds=week label=week.label %}</div>
+        {% endfor %}
+        </div>
+    </details>
+    {% endif %}
+    {% if fines.columns %}<p class="visually-hidden">{{ fines.description }}</p>
+    <div class="meter fines__list">
+        {% for column in fines.columns %}
+        <div class="meter__row{% if column.clean %} fines__day--clean{% endif %}">
+            <span class="meter__name">{{ column.label }}</span>
+            {% if column.clean %}
+            <span class="fines__zero">без штрафов</span>
+            {% else %}
+            <span class="bar"><i style="--v:{{ column.value }}"></i></span>
+            <b class="meter__value">{{ column.total }}&nbsp;₽</b>
+            {% if column.kinds %}<span class="meter__note">{{ column.kinds|typo }}</span>{% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>{% endif %}
+    <p class="source-note">из таблицы команды{% if sheet_note %} · обновлено в {{ sheet_note }}{% endif %}</p>
+</section>
+{% endif %}
+</div>
+{% endif %}
+
+{% if engagement.rows or achievements %}
+<div class="two stats-pair" style="margin-top:var(--gap)">
+{% if engagement.rows %}
+<section class="card" id="engagement">
+    <div class="label">вовлечение команды</div>
+    <div class="metric" style="margin-top:.375rem"><span class="metric__value" data-countup>{{ engagement.line }}</span><span class="metric__unit">человек</span></div>
+    <p style="margin-top:.25rem;font-size:.875rem;color:var(--mute)">Заполнили {{ engagement.filled }} из {{ engagement.total }}.</p>
+    <div class="engagement" style="margin-top:.75rem">
+        {% for row in engagement.rows %}
+        <a class="engagement__row" href="{% url 'member' row.slug %}">
+            <span class="engagement__name">{{ row.name }}</span>
+            <span class="bar bar--lime" role="img" aria-label="{{ row.name }}: {{ row.line }}"><i style="--v:{{ row.percent }}%"></i></span>
+            <b class="engagement__value">{{ row.line }}</b>
+        </a>
+        {% endfor %}
+    </div>
+    <p class="source-note">из таблицы команды{% if sheet_note %} · обновлено в {{ sheet_note }}{% endif %}</p>
+</section>
+{% endif %}
+
+{% if achievements %}
+<section class="card card--lime">
+    <div class="label">достижения</div>
+    <div class="stack" style="margin-top:.5rem;font-weight:600">
+        {% for item in achievements %}<div>{{ item.title|typo }}</div>{% endfor %}
+    </div>
+</section>
+{% endif %}
+</div>
+{% endif %}
+
+{% if quiet %}
+<div style="margin-top:var(--gap)">{% include "components/empty.html" with text="Ещё тихо. Первая запись откроет день." %}</div>
+{% endif %}
+{% endblock %}

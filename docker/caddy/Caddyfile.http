@@ -1,0 +1,10 @@
+# Режим без SSL: только порт 80, сертификаты не запрашиваются.
+# Подключается файлом compose.http.yaml. Переход на HTTPS — docs/DEPLOY.md, раздел 12.
+{
+	auto_https off
+}
+
+:80 {
+	encode gzip
+	reverse_proxy web:8000
+}

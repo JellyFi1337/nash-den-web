@@ -1,0 +1,10 @@
+{% load ui %}
+<div class="faces">
+    {% for item in people %}
+    {% if item.url %}
+    <a href="{{ item.url }}" data-member="{{ item.id }}" data-person-link aria-label="{{ item.name }}">{% avatar letter=item.letter status=item.status size=item.size photo=item.photo %}</a>
+    {% else %}
+    {% avatar letter=item.letter status=item.status size=item.size photo=item.photo %}
+    {% endif %}
+    {% endfor %}
+</div>

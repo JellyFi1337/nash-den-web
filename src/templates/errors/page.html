@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block html_attrs %}data-theme="light" data-theme-lock="light"{% endblock %}
+{% block title %}{{ title }} — Наш день{% endblock %}
+{% block chrome %}{% endblock %}
+{% block nav %}{% endblock %}
+{% block scripts %}{% endblock %}
+
+{% block content %}
+<div class="rise error-page" style="padding-top:1.5rem">
+    <img src="{% static 'img/brand/logo-360.png' %}" srcset="{% static 'img/brand/logo-720.png' %} 2x" alt="наш день" width="180" height="60">
+    <h1 class="h-page" style="margin-top:1rem">{{ text }}</h1>
+    <p style="margin-top:.75rem"><a class="btn" href="{{ action_url }}">{{ action }}</a></p>
+</div>
+{% endblock %}

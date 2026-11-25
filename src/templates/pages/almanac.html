@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load ui %}
+{% block title %}Альманах потока — Наш день{% endblock %}
+{% block content %}
+<header class="week-head">
+    <div class="label">летопись потока</div>
+    <h1 class="h-page">Альманах потока</h1>
+    <p class="support-copy">{{ "Неделя за неделей: образы дней и наши слова о них."|typo }}</p>
+    {% include "components/archive_nav.html" with current="almanac" %}
+</header>
+{% if quiet %}
+{% empty_state "Ещё тихо. Первая запись откроет день." %}
+{% else %}
+<ol class="almanac">
+    {% for chapter in chapters %}
+    <li class="card almanac__chapter">
+        <a class="label week-link" href="{{ chapter.url }}">{{ chapter.label }} →</a>
+        {% if chapter.title %}
+        <h2 class="h-card almanac__title">{{ chapter.title|typo }}</h2>
+        {% if chapter.lead %}<p>{{ chapter.lead|typo }}</p>{% endif %}
+        <a class="chip week-link" href="{{ chapter.url }}#story">читать неделю →</a>
+        {% endif %}
+        {% if chapter.days %}
+        <div class="almanac__days">
+            {% for day in chapter.days %}<a class="week-day" href="{{ day.url }}"><time>{{ day.label }}</time><span>{{ day.title|typo }}</span><span aria-hidden="true">→</span></a>{% endfor %}
+        </div>
+        {% else %}
+        <p class="source-note">опубликованных дней пока нет</p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ol>
+{% endif %}
+{% endblock %}

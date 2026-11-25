@@ -1,0 +1,1 @@
+{% load ui %}<div class="voice"><p class="voice__text">{{ item.text|typo }}</p><div class="voice__who">{% if item.who %}{{ item.who }}{% endif %}{% if item.who and item.url %} · {% endif %}{% if item.url %}<a class="week-link" href="{{ item.url }}">{{ item.label }}</a>{% endif %}</div></div>

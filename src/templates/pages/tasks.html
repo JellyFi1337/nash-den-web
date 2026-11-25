@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load ui %}
+{% block title %}Задания потока — Наш день{% endblock %}
+{% block content %}
+<header class="week-head">
+    <div class="label">летопись потока</div>
+    <h1 class="h-page">Задания потока</h1>
+    {% include "components/archive_nav.html" with current="tasks" %}
+</header>
+{% if quiet %}
+{% empty_state "Ещё тихо. Первая запись откроет день." %}
+{% else %}
+<div class="week-grid">
+    {% for item in items %}
+    <section class="card task-card">
+        <a class="label week-link" href="{{ item.url }}">{{ item.label }} →</a>
+        {% if item.title %}<h2 class="h-card">{{ item.title|typo }}</h2>{% endif %}
+        {% if item.essence %}<p>{{ item.essence|typo }}</p>{% endif %}
+        {% if item.insight %}<p class="task-card__insight">{{ item.insight|typo }}</p>{% endif %}
+        {% if item.done %}<p class="label">сдали {{ item.done }}</p>{% endif %}
+    </section>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

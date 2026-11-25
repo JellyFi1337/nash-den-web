@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block html_attrs %}data-chrome="gate"{% endblock %}
+{% block title %}Вход — Наш день{% endblock %}
+
+{% block body %}
+<svg class="gate-filter" aria-hidden="true">
+    <defs>
+        <filter id="rip" x="-10%" y="-5%" width="120%" height="110%">
+            <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.006 0.1" numOctaves="2" seed="3"></feTurbulence>
+            <feDisplacementMap id="disp" in="SourceGraphic" scale="0" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+        </filter>
+    </defs>
+</svg>
+<div
+    class="gate{% if feedback or locked %} is-ready{% endif %}"
+    data-gate
+    data-site-day="{{ site_day }}"
+    data-new-day="{% if new_day %}1{% else %}0{% endif %}"
+    data-feedback="{% if feedback %}1{% else %}0{% endif %}"
+    data-locked-seconds="{{ locked_seconds }}"
+>
+    <div class="gate__top">
+        <button class="gate__replay" type="button" data-gate-replay aria-label="Показать заставку ещё раз" title="Показать заставку ещё раз">
+            <img class="brand__mark" src="{% if shell.logo_url %}{{ shell.logo_url }}{% else %}{% static 'img/brand/mark.svg' %}{% endif %}" alt="" width="44" height="44" style="width:2.75rem;height:2.75rem">
+        </button>
+        <span class="gate__replay-hint" aria-hidden="true">↻ ещё раз</span>
+    </div>
+    <div class="gate__title" data-gate-title>
+        <span class="glitch" data-t="НАШ">НАШ</span><br>
+        <span class="glitch" data-t="ДЕНЬ">ДЕНЬ</span>
+    </div>
+    <div class="gate__log" data-gate-log>
+        {% if new_day %}
+        <div>новый день. новый код.</div>
+        <div class="is-ok">вчерашний код больше не действует</div>
+        {% endif %}
+    </div>
+    <div class="gate__panel">
+        {% if new_day %}
+        <p class="gate__hint">Новый день. Новый код.</p>
+        {% endif %}
+        <form method="post" action="{% url 'enter' %}" data-gate-form>
+            {% csrf_token %}
+            {% if new_day %}<input type="hidden" name="new_day" value="1">{% endif %}
+            <label class="visually-hidden" for="code">Код дня</label>
+            <div class="gate__code-row">
+                <input
+                    id="code"
+                    class="code-input"
+                    name="code"
+                    type="text"
+                    placeholder="код дня"
+                    autocomplete="one-time-code"
+                    enterkeyhint="go"
+                    autocapitalize="characters"
+                    spellcheck="false"
+                    aria-describedby="gate-format gate-hint"
+                    data-gate-code
+                    {% if locked %}disabled{% endif %}
+                    required
+                >
+                <button class="btn btn--ghost gate__paste" type="button" data-gate-paste hidden {% if locked %}disabled{% endif %}>вставить</button>
+            </div>
+            <p class="gate__hint gate__format" id="gate-format">формат: СЛОВО2026+N</p>
+            <button class="btn btn--lime" type="submit" {% if locked %}disabled{% endif %}>Войти</button>
+        </form>
+        <p class="gate__hint" id="gate-hint" data-gate-hint role="status">
+            {% if error %}{{ error }}{% else %}Код дня — у бота.{% endif %}
+        </p>
+        {% if bot_url %}
+        <a class="btn btn--ghost" href="{{ bot_url }}" target="_blank" rel="noopener">Открыть бота</a>
+        {% endif %}
+    </div>
+</div>
+<div class="scanlines" data-scanlines></div>
+<div class="gate-reveal" data-reveal></div>
+<noscript><style>.gate__panel { opacity: 1; transform: none; pointer-events: auto; }</style></noscript>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% load ui %}
+{% if kinds.segments %}
+<div class="fines-kinds" role="img" aria-label="{{ label }}: {% for segment in kinds.segments %}{{ segment.spoken|typo }}{% if not forloop.last %}; {% endif %}{% endfor %}">
+    {% for segment in kinds.segments %}<span class="fines-kind fines-kind--{{ segment.index }}" style="--share:{{ segment.percent }}" aria-hidden="true"></span>{% endfor %}
+</div>
+<ul class="fines-legend">
+    {% for segment in kinds.segments %}<li><span class="fines-kind fines-kind--{{ segment.index }} fines-legend__key" aria-hidden="true"></span><span>{{ segment.label|typo }}</span><b>{{ segment.money }}&nbsp;₽</b></li>{% endfor %}
+</ul>
+{% else %}
+<p class="fines__zero">без штрафов</p>
+{% endif %}

@@ -1,0 +1,4 @@
+{% load ui %}<a class="quality-row" href="{{ item.url }}">
+    <time class="label">{{ item.label }}</time>
+    <span>{% if item.callsign %}<b>«{{ item.callsign }}»</b>{% endif %}{% if item.highlight %}<span class="quality-row__words">{{ item.highlight|typo }}</span>{% endif %}</span>
+</a>

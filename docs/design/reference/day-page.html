@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Наш день — эталон страницы дня и блоков таблицы</title>
+<link rel="icon" href="../../../src/static/img/brand/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="ui.css">
+<style>
+/* ==========================================================================
+   Новые классы для отчёта версии 2 и таблицы команды (эталон).
+   Переносятся в src/static/css/ как есть: имена и значения не менять.
+   Цвета — только токены из ui.css.
+   ========================================================================== */
+
+/* Логотип в шапке: знак всегда, название — только на компьютере */
+.brand { display: flex; align-items: center; gap: .5rem; flex: none; }
+.brand__mark { width: 2.125rem; height: 2.125rem; display: block; }
+.brand__word { font: 900 1.125rem var(--font-display); letter-spacing: -.03em; display: none; }
+@media (min-width: 60rem) { .brand__word { display: block; } }
+
+/* Сетка страницы дня */
+.day-grid { display: grid; gap: var(--gap); }
+@media (min-width: 60rem) {
+  .day-grid { grid-template-columns: repeat(12, 1fr); }
+  .day-grid > .w-12 { grid-column: span 12; }
+  .day-grid > .w-7 { grid-column: span 7; }
+  .day-grid > .w-5 { grid-column: span 5; }
+  .day-grid > .w-6 { grid-column: span 6; }
+}
+
+/* Шапка дня: образ дня крупно */
+.day-title { font: 900 clamp(2rem, 8vw, 3.5rem)/1 var(--font-display); letter-spacing: -.04em; margin: .5rem 0 .5rem; }
+.day-lead { font-size: 1.125rem; font-weight: 600; max-width: 40rem; }
+
+/* Оглавление-якоря */
+.toc { display: flex; gap: .375rem; overflow-x: auto; padding-bottom: .25rem; scrollbar-width: none; }
+.toc a { flex: none; }
+
+/* Факты дня */
+.facts { list-style: none; display: grid; gap: .5rem; }
+.facts__item { display: grid; grid-template-columns: .875rem 1fr; gap: .5rem; font-weight: 600; }
+.facts__item::before { content: ""; width: .5rem; height: .5rem; margin-top: .5em; border-radius: 50%; background: var(--hot); }
+.card--ink .facts__item::before { background: var(--lime); }
+
+/* Цифры дня */
+.numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: var(--gap); }
+.numbers .num { font-size: 2.5rem; }
+
+/* Лента суток: вид события — короткая подпись */
+.timeline__row b { font-weight: 700; }
+.timeline__kind { font: 700 .5625rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); margin-left: .375rem; }
+.card--ink .timeline__kind { color: #8A8A92; }
+.timeline__row[data-kind="win"] b { background: var(--lime); color: var(--ink); padding: 0 .2em; border-radius: .2em; }
+
+/* Голоса дня */
+.voices { display: grid; gap: .875rem; }
+.voice { border-left: 3px solid var(--hot); padding: .125rem 0 .125rem .75rem; }
+.voice__text { font: 800 1.0625rem/1.25 var(--font-display); }
+.voice__who { font: 700 .625rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); margin-top: .25rem; }
+
+/* Слова дня: размер — от числа повторов, уровень 1–3 */
+.words { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .875rem; }
+.word { font: 900 1rem/1.1 var(--font-display); letter-spacing: -.02em; }
+.word[data-w="2"] { font-size: 1.375rem; }
+.word[data-w="3"] { font-size: 1.875rem; }
+.word sup { font: 700 .625rem var(--font-mono); color: var(--hot); margin-left: .125rem; }
+
+/* Связи дня: синий — цвет поддержки */
+.links { display: grid; gap: .625rem; }
+.link-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: .125rem .5rem; font-weight: 700; }
+.link-row__arrow { font-family: var(--font-mono); }
+.link-row__text { flex-basis: 100%; font-weight: 400; font-size: .9375rem; opacity: .85; }
+.link-row__kind { font: 700 .5625rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+
+/* На что смотрим — тёмная карточка, без цвета тревоги */
+.attention { list-style: none; display: grid; gap: .5rem; }
+.attention li { padding-left: 1rem; position: relative; }
+.attention li::before { content: "—"; position: absolute; left: 0; color: var(--lime); }
+
+/* Отделы проекта */
+.dept + .dept { border-top: var(--bw) solid var(--line); padding-top: .75rem; margin-top: .75rem; }
+
+/* Разворот длинного блока */
+.more > summary { list-style: none; cursor: pointer; margin-top: .75rem; }
+.more > summary::-webkit-details-marker { display: none; }
+.more[open] > summary { display: none; }
+
+/* Подпись источника для данных из таблицы */
+.source-note { font: 700 .625rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); margin-top: .75rem; }
+.card--ink .source-note { color: #8A8A92; }
+
+/* Цель потока из таблицы */
+.goal { display: grid; gap: .375rem; }
+.goal + .goal { border-top: var(--bw) solid var(--line); padding-top: .75rem; margin-top: .75rem; }
+.goal__title { font: 800 1.0625rem/1.2 var(--font-display); }
+.goal details { font-size: .9375rem; }
+.goal dt { margin-top: .5rem; }
+
+/* Неделя из таблицы: план и итоги */
+.week { display: grid; gap: .625rem; }
+@media (min-width: 60rem) { .week { grid-template-columns: 1fr 1fr; } }
+.week__col p + p { margin-top: .375rem; }
+
+/* служебное — только для этой страницы-образца */
+.kit-h { font: 700 .75rem var(--font-mono); letter-spacing: .1em; text-transform: uppercase; margin: 2.5rem 0 .75rem; padding-top: 1rem; border-top: 1.5px solid var(--ink); }
+.kit-note { color: var(--mute); font-size: .875rem; margin-bottom: .75rem; }
+</style>
+</head>
+<body>
+<!-- Все имена и тексты на этой странице вымышленные (как в docs/examples/report-example.json). -->
+<div class="shell">
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Наш день — на главную">
+      <img class="brand__mark" src="../../../src/static/img/brand/mark.svg" width="34" height="34" alt="">
+      <span class="brand__word">наш день</span>
+    </a>
+    <nav class="topbar__nav" aria-label="Разделы">
+      <a href="#">Сегодня</a><a href="#">Команда</a><a href="#" aria-current="page">Дни</a><a href="#">Проект</a>
+    </nav>
+    <span class="label" style="color:var(--ink)">ВТ 29.09</span>
+    <span class="topbar__spacer"></span>
+    <span class="chip chip--fill">день 09/58</span>
+    <button class="chip" type="button" aria-label="Размер текста">А+</button>
+  </header>
+
+  <h2 class="kit-h">08 · День: отчёт версии 2</h2>
+  <p class="kit-note">Порядок блоков — docs/PLAN.md, A8.4. Блок, для которого в отчёте нет данных, не выводится совсем.</p>
+
+  <nav class="datestrip" aria-label="Дни">
+    <a href="#">25</a><a href="#">26</a><a href="#">27</a><a href="#">28</a><a href="#" aria-current="date">29</a><a class="is-future">30</a><a class="is-future">1</a>
+  </nav>
+
+  <div class="num" style="margin-top:.75rem">29.09</div>
+  <div class="label" style="margin:.1875rem 0 .5rem">вторник · день 09/58</div>
+  <div class="chips"><span class="chip">прояснилось · после тяжёлого утра — ясно</span><span class="chip">ритм · плотный</span></div>
+
+  <h1 class="day-title">Горы, парки и&nbsp;первые тексты</h1>
+  <p class="day-lead">День начался на два часа раньше обычного и весь ушёл в поиск площадки.</p>
+
+  <nav class="toc" aria-label="Разделы дня" style="margin:1rem 0">
+    <a class="chip chip--fill" href="#main">главное</a><a class="chip" href="#line">лента</a><a class="chip" href="#task">задание</a><a class="chip" href="#voices">голоса</a><a class="chip" href="#links">связи</a><a class="chip" href="#project">проект</a><a class="chip" href="#people">люди</a>
+  </nav>
+
+  <main class="day-grid rise">
+    <section class="card w-7" id="main">
+      <div class="label">главное за день</div>
+      <p style="margin:.375rem 0 .75rem">Утром на связи все трое, вечером — двое. Вариант с городской площадкой закрылся, и команда проекта за вечер нашла два новых: парк и торговый центр.</p>
+      <ul class="facts">
+        <li class="facts__item">Утро — 3 из 3, в среднем в 07:12</li>
+        <li class="facts__item">«Лето в городе» закрыто до следующего сезона</li>
+        <li class="facts__item">Начаты переговоры с парком: две площадки, есть крытые места</li>
+      </ul>
+    </section>
+
+    <section class="card card--hot w-5">
+      <div class="label">цитата дня</div>
+      <p class="quote" style="font-size:1.625rem;margin:.5rem 0">Поддержка — это круто</p>
+      <div class="label">Марк · о вечернем созвоне</div>
+    </section>
+
+    <section class="card w-12">
+      <div class="numbers">
+        <div><div class="num">214</div><div class="label">сообщений в чате · 9 тем</div></div>
+        <div><div class="num">7</div><div class="label">новых идей станций</div></div>
+        <div><div class="num">3<small style="font-size:.5em">/3</small></div><div class="label">утро</div></div>
+        <div><div class="num">2<small style="font-size:.5em">/3</small></div><div class="label">итоги</div></div>
+      </div>
+    </section>
+
+    <section class="card card--ink w-7" id="line">
+      <div class="label">лента суток</div>
+      <div class="timeline" style="margin-top:.5rem">
+        <div class="timeline__row"><time>06:14</time><span>первая декларация — Лада</span></div>
+        <div class="timeline__row" data-kind="start"><time>10:37</time><span><b>Команда проекта собралась</b><span class="timeline__kind">начало</span><br>Договорились закрыть вопрос площадки до конца недели</span></div>
+        <div class="timeline__row" data-kind="turn"><time>17:07</time><span><b>Площадка закрылась</b><span class="timeline__kind">поворот</span><br>Команда проекта переключилась на парки</span></div>
+        <div class="timeline__row" data-kind="win"><time>19:22</time><span><b>Первые тексты</b><span class="timeline__kind">шаг вперёд</span><br>Отдел СМИ выложил тексты и четыре варианта визуала</span></div>
+        <div class="timeline__row"><time>21:06</time><span>первый итог — Лада</span></div>
+      </div>
+    </section>
+
+    <section class="card w-5" id="task">
+      <div class="label">задание дня · сдали 3</div>
+      <div class="h-card" style="margin:.375rem 0">Противоположный угол матрицы</div>
+      <p>Найти в себе противоположное качество и прожить день из него.</p>
+      <p class="label" style="margin-top:.75rem;color:var(--ink)">общее в ответах</p>
+      <p>Почти все написали про страх показаться слабым.</p>
+    </section>
+
+    <section class="card w-7" id="voices">
+      <div class="label">голоса дня</div>
+      <div class="voices" style="margin-top:.75rem">
+        <div class="voice"><div class="voice__text">Страх показаться слабой держал меня сильнее, чем усталость.</div><div class="voice__who">Лада · задание дня</div></div>
+        <div class="voice"><div class="voice__text">Я впервые написала текст, который не стыдно показать</div><div class="voice__who">Ася</div></div>
+        <div class="voice"><div class="voice__text">Отказ по площадке — это просто минус один вариант</div><div class="voice__who">Вера</div></div>
+      </div>
+      <details class="more">
+        <summary class="chip">ещё 2</summary>
+        <div class="voices" style="margin-top:.875rem">
+          <div class="voice"><div class="voice__text">Я всегда беру роль собранного, а противоположный угол — это просить помощи.</div><div class="voice__who">Марк · задание дня</div></div>
+        </div>
+      </details>
+      <p class="label" style="margin-top:1.25rem">разговор дня</p>
+      <div class="h-card" style="margin:.25rem 0">Что важнее: охват или глубина</div>
+      <p>Вечером обсуждали формат события: собирать сто человек или двадцать, но с разговором. Сошлись на том, что решает площадка.</p>
+    </section>
+
+    <section class="card card--lime w-5">
+      <div class="label">слова дня</div>
+      <div class="words" style="margin-top:.625rem">
+        <span class="word" data-w="3">площадка<sup>34</sup></span>
+        <span class="word" data-w="2">опора<sup>11</sup></span>
+        <span class="word" data-w="1">смелость<sup>5</sup></span>
+      </div>
+      <p class="label" style="margin-top:1.25rem;color:var(--ink)">светлое</p>
+      <p style="margin-top:.25rem">Команда проекта назвала себя черепахами, которые собирались быть пантерами</p>
+    </section>
+
+    <section class="card card--blue w-6" id="links">
+      <div class="label" style="color:#fff">кто кого держал</div>
+      <div class="links" style="margin-top:.75rem">
+        <div class="link-row"><span>Марк</span><span class="link-row__arrow">→</span><span>Лада</span><span class="link-row__text">Разобрал с ней страх созвона <span class="link-row__kind">· поддержал</span></span></div>
+        <div class="link-row"><span>Лада</span><span class="link-row__arrow">→</span><span>Ася</span><span class="link-row__text">Поблагодарила за текст о проекте <span class="link-row__kind">· благодарность</span></span></div>
+        <div class="link-row"><span>Ася</span><span class="link-row__arrow">+</span><span>Егор</span><span class="link-row__text">Вместе собрали визуал <span class="link-row__kind">· пара</span></span></div>
+      </div>
+    </section>
+
+    <section class="card card--ink w-6">
+      <div class="label">на что смотрим</div>
+      <ul class="attention" style="margin-top:.625rem">
+        <li>Дата 23.10 не подтверждена площадкой</li>
+        <li>Смета на шатры не собрана · Егор</li>
+      </ul>
+    </section>
+
+    <section class="card w-12" id="project">
+      <div class="label">проект за день</div>
+      <div class="h-card" style="margin:.375rem 0 .75rem">Площадка не найдена, но появилось два живых варианта.</div>
+      <div class="dept">
+        <div class="label" style="color:var(--ink)">отдел СМИ · Ася</div>
+        <p style="margin:.25rem 0">Собраны тексты и четыре варианта визуала</p>
+        <div class="chips"><span class="chip chip--lime">концепция «Архитектура себя»</span><span class="chip">дальше: выбрать визуал</span></div>
+      </div>
+      <div class="dept">
+        <div class="label" style="color:var(--ink)">ближайший шаг · Вера · до 01.10</div>
+        <p style="margin-top:.25rem">Съездить в парк и посмотреть крытые площадки</p>
+      </div>
+    </section>
+
+    <section class="card w-12" id="people">
+      <div class="label">люди дня · итог записан</div>
+      <div class="stack" style="margin-top:.75rem">
+        <details class="person">
+          <summary style="list-style:none;cursor:pointer">
+            <div class="person__head"><span class="avatar is-done">Л</span><div><div class="person__name">Лада · Плавучая</div><div class="person__meta">утро 06:14 · итог 21:06</div></div></div>
+            <div class="person__scale"><span class="label">контекст</span><div class="bar"><i style="--v:90%"></i></div><b>90</b></div>
+            <div class="person__scale"><span class="label">цели</span><div class="bar bar--goals"><i style="--v:90%"></i></div><b>90</b></div>
+            <div class="person__text">«От одной только открытости люди делают первые шаги»</div>
+          </summary>
+          <div class="stack" style="margin-top:.75rem;font-size:.9375rem">
+            <div><div class="label">видение</div>Море заряжает энергией и наполняет любовью.</div>
+            <div><div class="label">цели дня</div>Прилететь в Сочи · Сдать требования по проекту · Урок курса</div>
+            <div><div class="label">получилось</div><ul class="facts" style="margin-top:.25rem"><li class="facts__item">Сдала требования по проекту</li><li class="facts__item">Договорилась о тренировке на открытой воде</li></ul></div>
+            <div><div class="label">осталось</div>Тренировка на открытой воде</div>
+            <div><div class="label">сильная сторона дня</div>генерирует идеи даже в дороге</div>
+          </div>
+        </details>
+      </div>
+      <div class="label" style="margin-top:1.25rem">только утро</div>
+      <div class="stack" style="margin-top:.75rem">
+        <a class="person" href="#"><div class="person__head"><span class="avatar is-morning">А</span><div><div class="person__name">Ася · Смелая</div><div class="person__meta">утро 08:20</div></div></div><div class="person__wait">Итог ещё не записан</div></a>
+      </div>
+    </section>
+  </main>
+
+  <h2 class="kit-h">09 · Человек: блоки из таблицы команды</h2>
+  <p class="kit-note">docs/SHEET.md, раздел 5. Нет снимка таблицы — блоков нет совсем.</p>
+
+  <div class="day-grid">
+    <section class="card w-7">
+      <div class="label">цели потока</div>
+      <div class="goal" style="margin-top:.625rem">
+        <span class="chip chip--hot" style="justify-self:start">прорывная</span>
+        <div class="goal__title">Дополнительный доход 50%</div>
+        <div>К 17 ноября заработала 50% к текущему доходу</div>
+        <details><summary class="label" style="cursor:pointer;color:var(--ink)">смыслы и ценности</summary>
+          <dl><dt class="label">зачем</dt><dd>Перестать зависеть от одного заказчика</dd><dt class="label">ценности</dt><dd>Свобода, смелость</dd></dl>
+        </details>
+      </div>
+      <div class="goal">
+        <span class="chip" style="justify-self:start">творческая</span>
+        <div class="goal__title">Событие на 10 участниц</div>
+        <div>К 17 ноября провела встречу на 10 человек</div>
+      </div>
+      <div class="source-note">из таблицы команды · обновлено в 14:05</div>
+    </section>
+
+    <section class="card w-5">
+      <div class="label">профиль</div>
+      <div class="stack" style="margin-top:.5rem">
+        <div><div class="label">профессия</div>Мастер по свету</div>
+        <div><div class="label">бади</div>Павел</div>
+        <div><div class="label">день рождения</div>8 февраля</div>
+        <div><div class="label">чем готова поддержать</div>Выслушать и разобрать по шагам</div>
+      </div>
+      <div class="source-note">из таблицы команды · обновлено в 14:05</div>
+    </section>
+
+    <section class="card card--ink w-12">
+      <div class="label">неделя 2 · 28.09 — 04.10</div>
+      <div class="week" style="margin-top:.625rem">
+        <div class="week__col"><div class="label">план</div><p><b>Прорывная.</b> Написала 10 идей и выбрала три</p><p><b>Творческая.</b> Набросала сценарий</p></div>
+        <div class="week__col"><div class="label">итоги</div><p><b>Прорывная.</b> Сделано 2 из 3 — 70%</p><p><b>Творческая.</b> Сценарий готов — 100%</p></div>
+      </div>
+      <div class="source-note">из таблицы команды · обновлено в 14:05</div>
+    </section>
+
+    <section class="card card--dashed w-6">
+      <div class="label">банк команды</div>
+      <div class="num" style="margin:.375rem 0">300</div>
+      <div class="stack" style="font-size:.9375rem"><div>28.09 · штраф 100 · контекст</div><div>29.09 · штраф 100 · созвон</div></div>
+      <div class="source-note">из таблицы команды · обновлено в 14:05</div>
+    </section>
+  </div>
+
+</div>
+</body>
+</html>

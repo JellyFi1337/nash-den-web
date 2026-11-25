@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Все дни — Наш день{% endblock %}
+
+{% block content %}
+<h1 class="h-page">Все дни</h1>
+{% include "components/archive_nav.html" %}
+<div class="data-legend" aria-label="Легенда календаря · доля вечерних итогов">
+    <span><i class="calendar__key" data-l="x" aria-hidden="true"></i>нет данных</span>
+    <span><i class="calendar__key" data-l="1" aria-hidden="true"></i>итоги: менее 50%</span>
+    <span><i class="calendar__key" data-l="2" aria-hidden="true"></i>50–99%</span>
+    <span><i class="calendar__key" data-l="3" aria-hidden="true"></i>все</span>
+</div>
+<div class="calendar">
+    <div class="calendar__head">
+        {% for name in weekdays %}<span>{{ name }}</span>{% endfor %}
+    </div>
+    {% for week in weeks %}
+    <div>
+        {% if week.url %}<a class="label week-link" href="{{ week.url }}">неделя {{ week.number }} →</a>{% else %}<div class="label">неделя {{ week.number }}</div>{% endif %}
+        <div class="calendar__week">
+            {% for day in week.days %}
+            {% if day.in_stream %}
+            {% if day.url %}
+            <a class="calendar__day{% if day.today %} is-today{% endif %}" data-l="{{ day.level }}" href="{{ day.url }}" aria-label="{{ day.description }}"{% if day.today %} aria-current="date"{% endif %}>
+                <b>{{ day.label }}</b>
+                <span>{{ day.status }}</span>
+            </a>
+            {% else %}
+            <span class="calendar__day is-future">
+                <b>{{ day.label }}</b>
+                <span>{{ day.status }}</span>
+            </span>
+            {% endif %}
+            {% else %}
+            <span class="calendar__day is-out"></span>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

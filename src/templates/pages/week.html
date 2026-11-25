@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load ui %}
+{% block title %}{{ label }} — Наш день{% endblock %}
+{% block content %}
+{{ swipe|json_script:"day-swipe" }}
+<div data-swipe>
+{% include "components/day_nav.html" %}
+<header class="week-head">
+    <div class="label">неделя потока</div>
+    <h1 class="h-page">{{ label|typo }}</h1>
+    {% if report_count %}<p class="source-note">по опубликованным дням: {{ report_count }}</p>{% endif %}
+    <a class="chip week-link" href="{{ almanac_url }}">альманах потока →</a>
+</header>
+{% if quiet %}
+{% empty_state "Ещё тихо. Первая запись откроет день." %}
+{% else %}
+<div class="week-grid">
+    {% if story %}
+    <article class="card week-story" id="story">
+        <div class="label">неделя словами</div>
+        <h2 class="h-page week-story__title">{{ story.title|typo }}</h2>
+        {% if story.lead %}<p class="day-lead">{{ story.lead|typo }}</p>{% endif %}
+        {% for section in story.sections %}
+        <section class="week-story__part">
+            {% if section.heading %}<h3 class="h-card">{{ section.heading|typo }}</h3>{% endif %}
+            {% for paragraph in section.paragraphs %}<p>{{ paragraph|typo }}</p>{% endfor %}
+        </section>
+        {% endfor %}
+        {% if story.voices %}
+        <div class="voices week-story__part">{% for item in story.voices %}{% include "components/voice_row.html" %}{% endfor %}</div>
+        {% endif %}
+        {% if story.next %}<p class="week-story__part"><span class="label">впереди</span> {{ story.next|typo }}</p>{% endif %}
+    </article>
+    {% if story.chat %}{% include "components/chat_copy.html" with anchor="week-chat" text=story.chat %}{% endif %}
+    {% endif %}
+    {% if days %}
+    <section class="card week-days">
+        <h2 class="label">дни недели</h2>
+        {% for item in days %}<a class="week-day" href="{{ item.url }}"><time>{{ item.label }}</time><span>{{ item.title|default:"Открыть день"|typo }}</span><span aria-hidden="true">→</span></a>{% endfor %}
+    </section>
+    {% endif %}
+    {% if morning or evening or completion %}
+    <section class="card week-rhythm">
+        <h2 class="label">ритм недели</h2>
+        <div class="week-figures">
+            {% if morning %}<div><div class="label">утро в среднем</div><div class="num">{{ morning.time }}</div></div>{% endif %}
+            {% if evening %}<div><div class="label">итог в среднем</div><div class="num">{{ evening.time }}</div></div>{% endif %}
+        </div>
+        {% if completion %}<p class="week-completion"><b>{{ completion.percent }}%</b> итогов записано · {{ completion.count }} из {{ completion.total }}</p>{% endif %}
+    </section>
+    {% endif %}
+    {% if clean %}
+    <section class="card">
+        <h2 class="label">штрафы недели</h2>
+        <div class="figure"><span class="num">{{ fines.money }}</span><span class="figure__unit">₽</span></div>
+        <p class="source-note">{{ clean.text|typo }}</p>
+    </section>
+    {% endif %}
+    {% if plans %}
+    <section class="card">
+        <h2 class="label">план и итоги недели</h2>
+        <p class="week-detail">планы недели: <b>{{ plans.plans }} из {{ plans.total }}</b></p>
+        <p>итоги недели: <b>{{ plans.results }} из {{ plans.total }}</b></p>
+        <p class="source-note">по снимку таблицы</p>
+    </section>
+    {% endif %}
+    {% if achievements %}
+    <section class="card">
+        <h2 class="label">достижения недели · {{ achievements.count }}</h2>
+        {% for item in achievements.shown %}<p class="week-detail">{{ item.title|typo }}</p>{% if item.who_text %}<p class="source-note">{{ item.who_text }}</p>{% endif %}{% endfor %}
+        {% if achievements.more %}<details class="week-more"><summary class="chip">ещё {{ achievements.more_count }}</summary>{% for item in achievements.more %}<p class="week-detail">{{ item.title|typo }}</p>{% if item.who_text %}<p class="source-note">{{ item.who_text }}</p>{% endif %}{% endfor %}</details>{% endif %}
+    </section>
+    {% endif %}
+    {% if voices %}
+    <section class="card week-voices">
+        <h2 class="label">голоса и цитаты</h2>
+        <div class="voices week-detail">{% for item in voices.shown %}<div class="voice"><p class="voice__text">{{ item.text|typo }}</p><div class="voice__who">{% if item.who %}{{ item.who }} · {% endif %}<a class="week-link" href="{{ item.url }}">{{ item.label }}</a></div></div>{% endfor %}</div>
+        {% if voices.more %}<details class="week-more"><summary class="chip">ещё {{ voices.more_count }}</summary><div class="voices week-detail">{% for item in voices.more %}<div class="voice"><p class="voice__text">{{ item.text|typo }}</p><div class="voice__who">{% if item.who %}{{ item.who }} · {% endif %}<a class="week-link" href="{{ item.url }}">{{ item.label }}</a></div></div>{% endfor %}</div></details>{% endif %}
+    </section>
+    {% endif %}
+    {% if updates %}
+    <section class="card week-project">
+        <h2 class="label">подвижки проекта · {{ updates.count }}</h2>
+        {% for item in updates.shown %}<p class="week-detail">{{ item.text|typo }}</p><p class="source-note">{{ item.day|date:"d.m" }}</p>{% endfor %}
+        {% if updates.more %}<details class="week-more"><summary class="chip">ещё {{ updates.more_count }}</summary>{% for item in updates.more %}<p class="week-detail">{{ item.text|typo }}</p><p class="source-note">{{ item.day|date:"d.m" }}</p>{% endfor %}</details>{% endif %}
+    </section>
+    {% endif %}
+</div>
+{% endif %}
+{% include "components/day_nav.html" %}
+</div>
+{% endblock %}
